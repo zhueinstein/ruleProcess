@@ -1,0 +1,47 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+
+global ResResult resResult;
+
+// HL0002	联合用药不合理-种类	处方中适应症为高血压的药品	大于3种				禁忌	优先扣除处方中处方中总价高药品，最终保留3种。
+rule "HL0002:联合用药不合理-种类"
+salience 4999
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+    $dupList:ArrayList(size > 3) from collect(DrugInfoRuleModel(!omit && diseases contains "高血压") from $drugList)
+then
+
+    Collections.sort($dupList, new Comparator<DrugInfoRuleModel>(){
+        @Override
+        public int compare(DrugInfoRuleModel o1, DrugInfoRuleModel o2) {
+            return o1.getPrice().compareTo(o2.getPrice());
+        }
+    });
+
+    for(int index = 3; index < $dupList.size(); index++){
+        DrugInfoRuleModel model = (DrugInfoRuleModel)$dupList.get(index);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(2);
+        ruleResult.setMessage("HL0002:联合用药不合理-种类 处方中适应症为高血压的药品大于3种");
+        ruleResult.setRuleMark("HL0002");
+        ruleResult.setRuleNo("联合用药不合理-种类");
+        ruleResult.setDrugId(model.getDrugId());
+        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                    drugInfoRuleModel.setBuyAmount(0.00);
+                    drugInfoRuleModel.setOmit(true);
+                }
+        }
+        resResult.getRuleResultList().add(ruleResult);
+    }
+
+    update($orderInfo);
+ end

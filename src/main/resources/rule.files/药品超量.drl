@@ -1,0 +1,32 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import java.util.Map
+import java.util.HashMap
+import java.lang.Math;
+
+global ResResult resResult;
+
+rule "buyAmtExceed:药品超量-单个药品，购买数量大于标准最大量"
+when
+    $orderFact: OrderFact($drugFacts:drugFacts, $cycle:cycle)
+    $drugFact: (DrugFact(buyAmount != null && buyAmount > Math.ceil((Math.min(maximumDoseDailyInUnit, useAmountDaily) * $cycle) /packageSize) && $max: Math.ceil(Math.min(maximumDoseDailyInUnit,
+                                  useAmountDaily) * 60 /packageSize),buyAmount <= $max)
+    from $drugFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+
+    int min = (int)Math.ceil(Math.min($drugFact.getMaximumDoseDailyInUnit(), $drugFact.getUseAmountDaily())*$orderFact.getCycle()/$drugFact.getPackageSize());
+    ruleResult.setMessage("药品超量：标准最大购买量为" + min + $drugFact.getPackageUnit());
+    ruleResult.setRuleMark("buyAmtExceed");
+
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    map.put("maxAmount", min);
+    ruleResult.setObjectMap(map);
+
+    resResult.getRuleResultList().add(ruleResult);
+end

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.batch.mapper.OrderInfoMapper">
+
+    <resultMap id="OrderInfoEntity" type="com.wanhuhealth.rules.batch.model.OrderInfo">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="hospitalName" jdbcType="VARCHAR" property="hospitalName" />
+        <result column="order_date" jdbcType="TIMESTAMP" property="orderDate" />
+        <result column="cycle" jdbcType="VARCHAR" property="cycle" />
+        <result column="patient_id" jdbcType="VARCHAR" property="patientId" />
+        <result column="patient_age" jdbcType="VARCHAR" property="patientAge" />
+        <result column="patient_sex" jdbcType="VARCHAR" property="patientSex" />
+        <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+        <result column="account_no" jdbcType="VARCHAR" property="patientWanHuCard" />
+        <collection property="diseaseInfoList" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.batch.mapper.DiseaseInfoMapper.diseaseInfoList"/>
+         <collection property="drugInformationList" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.batch.mapper.DrugInformationMapper.drugInformationList"/>
+    </resultMap>
+
+    <select id="findBetween2Date" resultMap="OrderInfoEntity">
+       SELECT
+              t.id,t.order_no,dh.name as hospitalName ,t.order_date AS orderDate,t.cycle,
+              t.`patient_age`,t.`patient_id`, t.`patient_sex`, t.`patient_name`,
+              bpi.`account_no`
+        FROM order_info t INNER JOIN doctor_hospital dh ON t.hospital_id = dh.id
+        inner join `billing_payment_info` bpi on bpi.`patient_id` = t.`patient_id`
+        WHERE
+          t.order_date &gt;= #{start, jdbcType=VARCHAR}
+          AND t.order_date &lt; #{end, jdbcType=VARCHAR}
+          AND t.del_flag = '0'
+          AND dh.city_id = '340200'
+
+    </select>
+</mapper>

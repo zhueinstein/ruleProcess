@@ -1,0 +1,74 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+global ResResult resResult;
+
+//HL0009	西药主要成分重复	类别1为西药	"1.类别1为西药复方制剂 2.类别7（主要成分）与条件1中的药品有相同的成分"				禁忌	优先扣除处方中总价高的药品
+
+
+rule "HL0009:西药主要成分重复"
+salience 4992
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(firstCategory == "西药" , $theDrugId: drugId, $main: mainIngredients) from $drugInfoList
+    $dupList: ArrayList(size > 1) from collect(DrugInfoRuleModel(!omit, firstCategory == "西药复方制剂", drugId != $theDrugId,!Collections.disjoint($main, mainIngredients)) from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("HL0009");
+       ruleResult.setRuleNo("西药主要成分重复");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end
+ //HL0010	西药主要成分重复	类别1为西药复方制剂	"1.类别1为西药复方制剂   2.类别7（主要成分）与条件1中的药品有相同的成分"				禁忌	优先扣除处方中总价高的药品
+
+rule "HL0010:西药主要成分重复"
+salience 4991
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(firstCategory == "西药复方制剂" , $theDrugId: drugId, $main: mainIngredients) from $drugInfoList
+    $dupList: ArrayList(size > 1) from collect(DrugInfoRuleModel(!omit, firstCategory == "西药复方制剂", drugId != $theDrugId,!Collections.disjoint($main, mainIngredients)) from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("HL0010");
+       ruleResult.setRuleNo("西药主要成分重复");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end
+

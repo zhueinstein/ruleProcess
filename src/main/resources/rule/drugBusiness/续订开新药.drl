@@ -1,0 +1,30 @@
+package com.wanhuhealth.rules.drugBusiness
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.DrugReferFact
+import com.wanhuhealth.rules.fact.DrugFact
+import java.util.Map
+import java.util.HashMap
+import java.util.List
+
+global ResResult resResult;
+
+rule "newDrug:续订开新药-续方患者，新处方中增加了药品种类"
+when
+    $orderFact: DrugReferFact(drugFacts.size > 0, $hisDrugFacts: hisDrugFacts, $drugFacts: drugFacts)
+    DrugFact($drugId: drugId) from $drugFacts
+    $drugFact: DrugFact(drugId != $drugId) from $hisDrugFacts
+
+    
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("续订开新药：患者历史用药信息中无此药品");
+    ruleResult.setRuleMark("newDrug");
+    
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+
+    resResult.getRuleResultList().add(ruleResult);
+end

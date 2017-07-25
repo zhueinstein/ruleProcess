@@ -1,0 +1,27 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+
+global ResResult resResult;
+
+// HL0001	年龄限制	患者年龄≥65岁	类别7（主要成分）中包含冰片的药品				禁忌	扣除此药品
+rule "HL0001:年龄限制"
+salience 5000
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel(patientInfoRuleModel.age >= 65 && $drugList: drugInfoList)
+    $drugInfo:DrugInfoRuleModel(!omit && mainIngredients.size() > 0 && mainIngredients contains "冰片") from $drugList
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(1);
+    ruleResult.setMessage("HL0001:年龄限制 患者年龄≥65岁 类别7（主要成分）中包含冰片的药品");
+    ruleResult.setRuleMark("HL0001");
+    ruleResult.setRuleNo("年龄限制");
+    $drugInfo.setBuyAmount(0.00);
+    $drugInfo.setOmit(true);
+    resResult.getRuleResultList().add(ruleResult);
+    update($orderInfo);
+ end

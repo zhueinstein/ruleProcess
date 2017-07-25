@@ -1,0 +1,29 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import java.util.Map
+import java.util.HashMap
+
+global ResResult resResult;
+salience 99
+lock-on-active true
+rule "dailyAmtExceed:单日用量超限-处方中每个药品，处方内单日用药量(频次*单次用量)超过说明书日使用最大量"
+when
+    $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList)
+    $drugInfo: (DrugInfoRuleModel(!omit && maximumDoseDaily > 0, dailyAmount > maximumDoseDaily, $max:maximumDoseDaily) from $drugInfoList)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+//    ruleResult.setMessage("用法用量超限：药品每日用量超过说明书最大值（" + (int)($max+0) + $drugInfo.getUseDoseUnit() + "）");
+    ruleResult.setRuleMark("dailyAmtExceed");
+    ruleResult.setRuleNo("单日用量超限");
+     ruleResult.setDrugId($drugInfo.getDrugId());
+    if(Math.ceil($max * $drugInfo.getPeriod() / $drugInfo.getPackageSize()) < $drugInfo.getBuyAmount()){
+        $drugInfo.setBuyAmount(Math.ceil($max * $drugInfo.getPeriod() / $drugInfo.getPackageSize()));
+    }
+    resResult.getRuleResultList().add(ruleResult);
+    update($orderInfo);
+end

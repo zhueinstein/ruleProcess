@@ -1,0 +1,22 @@
+package com.wanhuhealth.rules.drugBusiness
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.DrugReferFact
+import java.util.Map
+import java.util.HashMap
+
+global ResResult resResult;
+
+rule "drugTypeExceed:种类超标-处方中药品种类超过7种"
+when
+    DrugReferFact(drugFacts.size() > 7)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(0);
+    ruleResult.setMessage("种类超标：用药信息中药品种类超过7种");
+    ruleResult.setRuleMark("drugTypeExceed");
+
+    Map map = new HashMap();
+    ruleResult.setObjectMap(map);
+    resResult.getRuleResultList().add(ruleResult);
+end

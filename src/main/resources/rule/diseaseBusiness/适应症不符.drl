@@ -1,0 +1,46 @@
+package com.wanhuhealth.rules.diseaseBusiness
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.DiseaseReferFact
+import com.wanhuhealth.rules.fact.DrugIndicationFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+import java.util.Collections;
+import java.util.List
+import java.util.HashSet
+
+global ResResult resResult;
+
+function boolean diseaseMatch(List diseaseFacts, List indications){
+    HashSet hashSet = new HashSet();
+    for (Object fact : diseaseFacts) {
+        DiseaseFact diseaseFact = (DiseaseFact) fact;
+        hashSet.add(diseaseFact.getId());
+    }
+    for (Object indication : indications) {
+        DiseaseFact diseaseFact = (DiseaseFact) indication;
+        if(!hashSet.add(diseaseFact.getId())){
+            return true;
+        }
+    }
+    return false;
+}
+
+rule "diseaseNotMatch:适应症不符-处方中每个药品，其适应症与处方的＂疾病类型＂不匹配"
+when
+    $orderFact: DiseaseReferFact($indicationFacts:indicationFacts, $diseaseFacts: diseaseFacts, diseaseFacts.size > 0)
+    $drugFact: (DrugIndicationFact(indications.size > 0, !diseaseMatch($diseaseFacts, indications)) from $indicationFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("适应症不符：药品适应症与当前疾病不匹配");
+    ruleResult.setRuleMark("diseaseNotMatch");
+
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+
+    resResult.getRuleResultList().add(ruleResult);
+
+end

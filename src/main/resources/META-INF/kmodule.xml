@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+    <kbase name="kDiseaseBusinessBase" packages="rule.diseaseBusiness">
+        <ksession name="kDiseaseBusiness" />
+    </kbase>
+    <kbase name="kDrugCalculationBase" packages="rule.drugCalculation">
+        <ksession name="kDrugCalculation" />
+    </kbase>
+    <kbase name="kOrderBusinessBase" packages="rule.orderBusiness">
+        <ksession name="kOrderBusiness" />
+    </kbase>
+    <kbase name="kDrugBusinessBase" packages="rule.drugBusiness">
+        <ksession name="kDrugBusiness" />
+    </kbase>
+    <kbase name="OrderInfoKB" packages="batch">
+        <ksession name="wanHu"/>
+    </kbase>
+    <kbase name="HlKB" packages="HL">
+        <ksession name="HL"/>
+    </kbase>
+</kmodule>

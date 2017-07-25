@@ -1,0 +1,43 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+global ResResult resResult;
+
+//HL0008	西药药理作用机制冲突	类别7（主要成分）为格列齐特的药品	类别7（主要成分）为那格列奈的药品				禁忌	优先扣除处方中总价高的药品
+
+rule "HL0008:西药药理作用机制冲突"
+salience 4993
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(mainIngredients contains "格列齐特" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,  drugId != $theDrugId, mainIngredients contains "那格列奈") from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("HL0008");
+       ruleResult.setRuleNo("西药药理作用机制冲突");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end
+

@@ -1,0 +1,36 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+import java.util.ArrayList
+global ResResult resResult;
+
+rule "newDisease:续方疾病增加-续方患者，新处方中增加了疾病种类"
+when
+    $orderInfo: OrderFact(hisDiseases.size > 0, $hisDiseases: hisDiseases, $diseaseFacts: diseaseFacts)
+    $newDiseaseList: ArrayList(size > 0) from collect (  DiseaseFact(id not memberOf $hisDiseases) from $diseaseFacts)
+
+then
+    String newDisease = "";
+    for(Object d: $newDiseaseList){
+            DiseaseFact diseaseFact = (DiseaseFact)d;
+            newDisease += "，" + diseaseFact.getName();
+    }
+    newDisease = newDisease.substring(1);
+
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(0);
+    ruleResult.setMessage("续订疾病增加：患者历史用药信息中无此疾病种类（" + newDisease + "）");
+    ruleResult.setRuleMark("newDisease");
+
+    Map map = new HashMap();
+    map.put("newDiseaseList", $newDiseaseList);
+    ruleResult.setObjectMap(map);
+
+    resResult.getRuleResultList().add(ruleResult);
+
+end

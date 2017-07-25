@@ -1,0 +1,41 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+import java.util.Collections;
+import java.util.List
+
+global ResResult resResult;
+
+function boolean diseaseMatch(List diseaseFacts, List hisDiseases){
+    for (Object fact : diseaseFacts) {
+        DiseaseFact diseaseFact = (DiseaseFact) fact;
+        if(hisDiseases.contains(diseaseFact.getId())){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+rule "diseaseNotMatch:适应症不符-处方中每个药品，其适应症与处方的＂疾病类型＂不匹配"
+when
+    $orderFact: OrderFact($drugFacts:drugFacts, $diseaseFacts: diseaseFacts, diseaseFacts.size > 0)
+    $drugFact: (DrugFact(indications.size > 0, !diseaseMatch($diseaseFacts, indications)) from $drugFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("适应症不符：药品适应症与当前疾病不匹配");
+    ruleResult.setRuleMark("diseaseNotMatch");
+
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+
+    resResult.getRuleResultList().add(ruleResult);
+
+end

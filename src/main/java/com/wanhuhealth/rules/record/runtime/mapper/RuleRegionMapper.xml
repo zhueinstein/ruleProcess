@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.record.runtime.mapper.RuleRegionMapper" >
+
+    <resultMap id="RuleRegionEntity" type="com.wanhuhealth.rules.record.model.CfgRegionRuleSystemCategory" extends="com.wanhuhealth.rules.utils.BaseMapper.BaseResultMap">
+        <result column="id" jdbcType="BIGINT" property="id"></result>
+        <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+        <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+        <result column="area_id" jdbcType="VARCHAR" property="areaId" />
+        <result column="rule_id" jdbcType="VARCHAR" property="ruleId" />
+        <result column="on_off" jdbcType="VARCHAR" property="onOff" />
+        <collection property="hasRegionSystemCategories" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.record.runtime.mapper.RuleRegionSystemMapper.findByRegionId"/>
+    </resultMap>
+
+    <sql id="Base_Column">
+        id,province_id,city_id,area_id,rule_id,on_off, <include refid="com.wanhuhealth.rules.utils.BaseMapper.Base_Column"/>
+    </sql>
+    <select id="findByRuleId" parameterType="java.lang.Long" resultMap="RuleRegionEntity">
+        SELECT <include refid="Base_Column"/>
+        FROM cfg_region_rule_system_category t
+        WHERE  t.rule_id = #{ruleId, jdbcType=BIGINT}
+
+    </select>
+</mapper>

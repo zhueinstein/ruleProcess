@@ -1,0 +1,50 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import java.util.Map
+import java.util.HashMap
+import java.util.ArrayList
+import java.util.Comparator
+import java.util.Collections
+
+global ResResult resResult;
+salience 96
+lock-on-active true
+rule "dupDrugType:药品种类重复-处方中，两个或以上药品属于同一西药种类"
+when
+    $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit && $id:drugId, pharmacologyClass != null, $theClass:pharmacologyClass) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit && drugId != $id, pharmacologyClass == $theClass) from $drugInfoList)
+
+then
+        System.out.println("111111111111111111111 == " + $orderInfo.getMessage());
+        $dupList.add($drugInfo);
+       $dupList = OrderInfoRuleModel.removeZero($dupList);
+        for (Object o : $dupList) {
+            System.out.println(((DrugInfoRuleModel)o).isOmit());
+            System.out.println(((DrugInfoRuleModel)o).getDrugId() + " = " + ((DrugInfoRuleModel)o).getBuyAmount() *  ((DrugInfoRuleModel)o).getPrice());
+        }
+
+        for(int index = 1 ; index < $dupList.size(); index++){
+          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+          RuleResult ruleResult = new RuleResult();
+          ruleResult.setRuleCheckObjectType(2);
+          ruleResult.setRuleMark("dupGenericName");
+          ruleResult.setRuleNo("药品种类重复");
+          ruleResult.setDrugId(model.getDrugId());
+          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+              if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                  drugInfoRuleModel.setBuyAmount(0.00);
+                  drugInfoRuleModel.setOmit(true);
+                  System.out.println(model.getDrugId() + "   set omit ok");
+              }
+          }
+
+          resResult.getRuleResultList().add(ruleResult);
+        }
+        System.out.println("222222222222222222222");
+        update($orderInfo)
+end

@@ -1,0 +1,47 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import java.util.Map
+import java.util.HashMap
+import java.util.HashSet
+import java.util.Collections
+import java.util.Comparator
+
+global ResResult resResult;
+salience 95
+lock-on-active true
+rule "drugTypeExceed:种类超标-处方中药品种类超过7种"
+when
+    $orderInfo: OrderInfoRuleModel(drugInfoList.size() > 7)
+then
+
+    Collections.sort($orderInfo.getDrugInfoList(), new Comparator<DrugInfoRuleModel>(){
+         public int compare(DrugInfoRuleModel arg0, DrugInfoRuleModel arg1) {
+               Double d0 = arg0.getBuyAmount() * arg0.getPrice();
+               Double d1 = arg1.getBuyAmount() * arg1.getPrice();
+              return d0.compareTo(d1);
+         }
+    });
+    int first = 0;
+    for (int ins = 0; ins < $orderInfo.getDrugInfoList().size(); ins++) {
+        if(!$orderInfo.getDrugInfoList().get(ins).isOmit()){
+            first = ins;
+            break;
+        }
+    }
+
+    for (int index = (7 + first); index < $orderInfo.getDrugInfoList().size(); index++) {
+        $orderInfo.getDrugInfoList().get(index).setBuyAmount(0.00);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(0);
+        ruleResult.setMessage("种类超标：用药信息中药品种类超过7种");
+        ruleResult.setRuleMark("drugTypeExceed");
+        ruleResult.setRuleNo("种类超标");
+        ruleResult.setDrugId($orderInfo.getDrugInfoList().get(index).getDrugId());
+        resResult.getRuleResultList().add(ruleResult);
+    }
+
+end

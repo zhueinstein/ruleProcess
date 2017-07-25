@@ -1,0 +1,28 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import java.util.Map
+import java.util.HashMap
+import java.lang.Math;
+
+global ResResult resResult;
+
+rule "hisAmtExceed:余量超量-处方中每个药品，当前仍在疗程内处方的药品余量大于本次需求量"
+when
+    $orderFact: OrderFact($drugFacts:drugFacts, $cycle:cycle)
+    $drugFact: (DrugFact(dailyAmount > 0, $cycle > 0, hisAmount > $cycle * dailyAmount) from $drugFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("余量超量：仍在疗程内的药品余量大于本次需求量");
+    ruleResult.setRuleMark("hisAmtExceed");
+    
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+    
+end

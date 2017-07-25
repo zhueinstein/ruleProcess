@@ -1,0 +1,8 @@
+package dddd
+dialect  "mvel"
+
+rule "helloWorld"
+    when
+    then
+        System.err.println("HelloWorld1");
+end

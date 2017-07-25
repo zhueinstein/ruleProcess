@@ -1,0 +1,29 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import java.util.Map
+import java.util.HashMap
+import java.lang.Math;
+
+
+global ResResult resResult;
+
+rule "buyAmtMeetMax:顶量购买－处方中每个药品，购买数量等于标准最大量"
+when
+    $orderFact: OrderFact($drugFacts:drugFacts, $cycle:cycle)
+    $drugFact: (DrugFact(buyAmount == Math.ceil((Math.min(maximumDoseDailyInUnit, useAmountDaily) * $cycle) /packageSize)) from $drugFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("顶量购买：单个药品，购买数量等于标准最大量");
+    ruleResult.setRuleMark("buyAmtMeetMax");
+
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    map.put("maxAmount", $drugFact.getBuyAmount() -1);
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+end

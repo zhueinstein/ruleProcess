@@ -1,0 +1,26 @@
+package com.wanhuhealth.rules.orderBusiness
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderReferFact
+import java.util.Map
+import java.util.HashMap
+import java.util.ArrayList
+
+global ResResult resResult;
+
+rule "dupOrder:重复处方-有未取处方时，开新处方"
+when
+    $orderInfo: OrderReferFact($hisOrderFacts: hisOrderFacts)
+    $hisOrderFacts1: ArrayList(size > 0) from collect (OrderReferFact($id:id, status < 60) from $hisOrderFacts)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(0);
+    ruleResult.setMessage("重复订单：该患者仍有未完成用药信息，请确认是否继续登记用药");
+    ruleResult.setRuleMark("dupOrder");
+    
+    Map map = new HashMap();
+    map.put("hisOrderInfoRuleModels", $hisOrderFacts1);
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+end

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.batch.mapper.DrugInformationMapper">
+    <resultMap id="DrugInformationEntity" type="com.wanhuhealth.rules.batch.model.DrugInformation">
+        <result column="drugId" jdbcType="BIGINT" property="drugId"/>
+        <result column="baseDrugId" jdbcType="BIGINT" property="baseDrugId"/>
+        <result column="price" jdbcType="DOUBLE" property="price" />
+        <result column="amount" jdbcType="DOUBLE" property="amount" />
+        <result column="useAmount" jdbcType="DOUBLE" property="useAmount" />
+        <result column="amount" jdbcType="DOUBLE" property="useAmount" />
+        <result column="frequency" jdbcType="VARCHAR" property="frequency" />
+        <result column="commonName" jdbcType="VARCHAR" property="commonName" />
+        <result column="largeClass" jdbcType="VARCHAR" property="largeClass" />
+        <result column="mediumClass" jdbcType="VARCHAR" property="mediumClass" />
+        <result column="smallClass" jdbcType="VARCHAR" property="smallClass" />
+        <result column="pharmacologyClass" jdbcType="VARCHAR" property="pharmacologyClass" />
+        <result column="preparationUnit" jdbcType="VARCHAR" property="preparationUnit" />
+        <result column="packageUnit" jdbcType="VARCHAR" property="packageUnit" />
+        <result column="minimumUnit" jdbcType="VARCHAR" property="minimumUnit" />
+        <result column="productCode" jdbcType="VARCHAR" property="productCode" />
+        <result column="productName" jdbcType="VARCHAR" property="productName" />
+        <result column="packageSize" jdbcType="INTEGER" property="packageSize" />
+        <result column="maximumDose" jdbcType="DOUBLE" property="maximumDose" />
+        <result column="maximumDoseDaily" jdbcType="DOUBLE" property="maximumDoseDaily" />
+        <result column="recommendUseAmount" jdbcType="DOUBLE" property="recommendUseAmount" />
+        <result column="recommendFrequency" jdbcType="VARCHAR" property="recommendFrequency" />
+        <result column="firstCategory" jdbcType="VARCHAR" property="firstCategory" />
+        <result column="secCategory" jdbcType="VARCHAR" property="secCategory" />
+        <result column="thirCategory" jdbcType="VARCHAR" property="thirCategory" />
+        <result column="otherCategory" jdbcType="VARCHAR" property="otherCategory" />
+        <result column="mainIngredients" jdbcType="VARCHAR" property="mainIngredients" />
+        <result column="diseases" jdbcType="VARCHAR" property="diseases" />
+        <collection property="indicationList" column="baseDrugId" javaType="ArrayList" select="com.wanhuhealth.rules.batch.mapper.DiseaseInfoMapper.indicationList"/>
+    </resultMap>
+    <select id="drugInformationList" parameterType="java.lang.String" resultMap="DrugInformationEntity">
+    SELECT  bdi.id AS baseDrugId, di.id as drugId, dd.`price`, dd.`amount`, dd.`use_amount` AS useAmount, dd.`frequency`,
+	mi.`common_name` AS commonName, sd1.`label` AS largeClass, sd2.`label` AS mediumClass, sd3.`label` AS smallClass, sd3.`label` AS pharmacologyClass,
+	bdi.preparation_unit AS preparationUnit, sd5.`label` AS packageUnit, sd6.`label` AS minimumUnit,
+	bdi.`product_code` AS productCode, bdi.`product_name` AS productName,bdi.`package_size` AS packageSize, bdi.`maximum_dose_in_unit` AS maximumDose,
+	 bdi.`maximum_dose_daily_in_unit` AS maximumDoseDaily, bdi.`use_amount`AS recommendUseAmount, bdi.`frequency` AS recommendFrequency,
+	bdc.first_category AS firstCategory, bdc.sec_category AS secCategory, bdc.thir_category AS thirCategory, bdc.other_category AS otherCategory,
+	 bdc.main_ingredients AS mainIngredients, bdc.diseases AS diseases
+	FROM drug_detail dd
+	INNER JOIN drug_info di ON di.`id` = dd.`drug_id`
+	INNER JOIN base_drug_info bdi ON bdi.`id` = di.`base_drug_id`
+	INNER JOIN medicine_info mi ON mi.`id` = bdi.`medicine_id`
+	INNER JOIN `base_drug_category` bdc ON bdc.product_code = bdi.`product_code`
+	LEFT JOIN sys_dict sd1 ON mi.`large_class` = sd1.`id`
+	LEFT JOIN sys_dict sd2 ON mi.`medium_class` = sd2.`id`
+	LEFT JOIN sys_dict sd3 ON mi.`small_class` = sd3.`id`
+	LEFT JOIN sys_dict sd5 ON bdi.`package_unit` = sd5.`id`
+	LEFT JOIN sys_dict sd6 ON bdi.`minimum_unit` = sd6.`id`
+
+            where dd.`order_id` = #{orderId, jdbcType=VARCHAR}
+    </select>
+    <select id="findAll" parameterType="java.lang.String" resultType="com.wanhuhealth.rules.batch.model.DrugInformation">
+    select dd.`price`, dd.`amount`, dd.`amount`, dd.`frequency`,
+            mi.`common_name` as commonName, sd1.`label` as largeClass, sd2.`label` as mediumClass, sd3.`label` as smallClass, sd3.`label` as pharmacologyClass,
+            bdi.`product_code` as productCode, bdi.`product_name` as productName,bdi.`package_size` as packageSize, bdi.`maximum_dose` as maximumDose, bdi.`maximum_dose_daily` as maximumDoseDaily, bdi.`use_amount`as recommendUseAmount, bdi.`frequency` as recommendFrequency,
+            bdc.first_category as firstCategory, bdc.sec_category as secCategory, bdc.thir_category as thirCategory, bdc.other_category as otherCategory, bdc.main_ingredients as mainIngredients, bdc.diseases as diseases
+            from drug_detail dd
+            inner join drug_info di on di.`id` = dd.`drug_id`
+            inner join base_drug_info bdi on bdi.`id` = di.`base_drug_id`
+            inner join medicine_info mi on mi.`id` = bdi.`medicine_id`
+            inner join `base_drug_category` bdc on bdc.product_code = bdi.`product_code`
+            inner join sys_dict sd1 on mi.`large_class` = sd1.`id`
+            inner join sys_dict sd2 on mi.`medium_class` = sd2.`id`
+            inner join sys_dict sd3 on mi.`small_class` = sd3.`id`
+    </select>
+</mapper>

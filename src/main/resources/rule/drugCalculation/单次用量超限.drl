@@ -1,0 +1,28 @@
+package com.wanhuhealth.rules.drugCalculation
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.DrugReferFact
+import com.wanhuhealth.rules.fact.DrugFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+
+global ResResult resResult;
+
+rule "useAmtExceed:单次用量超限-处方中每个药品，处方内单次用量超过说明书单次用药量"
+when
+    $orderFact: DrugReferFact($drugInfoList:drugFacts)
+    $drugFact: (DrugFact(maximumDoseInUnit > 0, useAmount > maximumDoseInUnit, $max:maximumDoseInUnit) from $drugInfoList)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("单次用量超限：药品单次用量超过说明书最大值（" + ($drugFact.getMaximumDoseInUnit()) + $drugFact.getUseDoseUnit() + "）");
+    ruleResult.setRuleMark("useAmtExceed");
+    
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+    
+end

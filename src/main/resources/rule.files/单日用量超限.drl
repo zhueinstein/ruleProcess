@@ -1,0 +1,28 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+
+
+global ResResult resResult;
+
+rule "dailyAmtExceed:单日用量超限-处方中每个药品，处方内单日用药量(频次*单次用量)超过说明书日使用最大量"
+when
+    $orderFact: OrderFact($drugInfoList:drugFacts)
+    $drugFact: (DrugFact(dailyAmount != null && maximumDoseDailyInUnit > 0, dailyAmount > maximumDoseDailyInUnit, $max:maximumDoseDailyInUnit) from $drugInfoList)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("用法用量超限：药品每日用量超过说明书最大值（" + (int)($max+0) + $drugFact.getUseDoseUnit() + "）");
+    ruleResult.setRuleMark("dailyAmtExceed");
+    
+    Map map = new HashMap();
+    map.put("drugId", $drugFact.getDrugId());
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+end

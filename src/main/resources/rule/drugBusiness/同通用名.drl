@@ -1,0 +1,35 @@
+package com.wanhuhealth.rules.drugBusiness
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.DrugReferFact
+import com.wanhuhealth.rules.fact.DrugFact
+import java.util.Map
+import java.util.HashMap
+import java.util.ArrayList;
+
+global ResResult resResult;
+
+rule "dupGenericName:同通用名-订单中两个或以上药品通用名相同"
+    when
+        $orderInfo: DrugReferFact($drugInfoList:drugFacts)
+           DrugFact($id:drugId, $theCommonName:commonName) from $drugInfoList
+           $dupList: ArrayList(size > 0) from collect( DrugFact(drugId != $id, commonName == $theCommonName) from $drugInfoList)
+
+    then
+      String dupDrugs = "";
+        for(Object m: $dupList){
+            dupDrugs += "，" + ((DrugFact)m).getProductName();
+        }
+        dupDrugs = dupDrugs.substring(1);
+
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(2);
+        ruleResult.setMessage("同通用名：此药品与" + dupDrugs + "通用名相同，用药重复");
+        ruleResult.setRuleMark("dupGenericName");
+
+        Map map = new HashMap();
+        map.put("drugId", $id);
+        ruleResult.setObjectMap(map);
+
+        resResult.getRuleResultList().add(ruleResult);
+end

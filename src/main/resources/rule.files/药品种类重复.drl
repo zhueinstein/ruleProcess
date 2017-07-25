@@ -1,0 +1,36 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.globals.RuleResult
+import com.wanhuhealth.rules.globals.ResResult
+import com.wanhuhealth.rules.fact.OrderFact
+import com.wanhuhealth.rules.fact.DrugFact
+import com.wanhuhealth.rules.fact.DiseaseFact
+import java.util.Map
+import java.util.HashMap
+import java.util.ArrayList;
+
+global ResResult resResult;
+
+rule "dupDrugType:药品种类重复-处方中，两个或以上药品属于同一西药种类"
+when
+    $orderInfo: OrderFact($drugInfoList:drugFacts)
+    DrugFact($id:drugId, pharmacologyClass != null, $theClass:pharmacologyClass) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect( DrugFact(drugId != $id, pharmacologyClass == $theClass) from $drugInfoList)
+
+then
+    String dupDrugs = "";
+    for(Object m: $dupList){
+        dupDrugs += "，" + ((DrugFact)m).getProductName();
+    }
+    dupDrugs = dupDrugs.substring(1);
+
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("药品种类重复：此药品与" + dupDrugs + "属于同一西药种类");
+    ruleResult.setRuleMark("dupDrugType");
+    
+    Map map = new HashMap();
+    map.put("drugId", $id);
+    ruleResult.setObjectMap(map);
+    
+    resResult.getRuleResultList().add(ruleResult);
+end

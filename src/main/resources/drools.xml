@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:kie="http://drools.org/schema/kie-spring"
+
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://drools.org/schema/kie-spring https://raw.githubusercontent.com/droolsjbpm/droolsjbpm-integration/master/kie-spring/src/main/resources/org/kie/spring/kie-spring-6.0.0.xsd"
+       >
+
+    <kie:import
+            releaseId-ref="ksession-releaseId" enableScanner="true" scannerInterval="60000"/>
+
+    <kie:releaseId id="ksession-releaseId" groupId="wanhulf" artifactId="Rules" version="LATEST"/>
+
+    <bean id="kiePostProcessor"
+
+          class="org.kie.spring.annotations.KModuleAnnotationPostProcessor"/>
+
+</beans>

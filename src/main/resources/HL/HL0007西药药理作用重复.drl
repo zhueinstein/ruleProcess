@@ -1,0 +1,42 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+global ResResult resResult;
+
+// HL0007	西药药理作用重复	类别1为西药的药品	"1.类别1为西药的药品2.类别4或5或6与条件1药品类别相同"				禁忌	优先扣除处方中总价高的药品
+
+rule "HL0007:西药药理作用重复"
+salience 4994
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(firstCategory == "西药" ,$other: otherCategory, $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 1) from collect(DrugInfoRuleModel(!omit, firstCategory == "西药", drugId != $theDrugId, !Collections.disjoint($other, otherCategory    )) from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("HL0007");
+       ruleResult.setRuleNo("西药药理作用重复");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end

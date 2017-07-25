@@ -1,0 +1,46 @@
+#server
+server:
+  port: 1989
+  tomcat:
+    uri-encoding: UTF-8
+
+# SPRING PROFILES
+spring:
+    datasource:
+        url: jdbc:mysql://10.1.10.51:3306/wanhu_sc0713_1?useUnicode=true&characterEncoding=utf-8&useSSL=true
+        username: mysql
+        password: 123456
+        driver-class-name: com.mysql.jdbc.Driver
+    redis:
+        database: 0
+        host: 127.0.0.1
+        port: 6379
+        timeout: 30000000
+        auth: 123456
+        pool:
+          max-idle: 8
+          min-idle: 0
+          max-active: 8
+          max-wait: -1
+
+# MyBatis
+mybatis:
+    typeAliasesPackage: com.wanhuhealth.**.mapper
+    mapperLocations: classpath:com.wanhuhealth/**/*Mapper.xml
+
+# LOGGING
+logging:
+    level:
+       com.Learning:DEBUG
+    file: D:/apache-tomcat-8.0.35/logs/learning.log
+#Leaning
+learning:
+    friend: 朱薇枫
+    configurationBean:
+        port: 8001
+        serverName: 安徽影视歌曲大赛
+        topic: 公平公正的唱歌比赛，由中国铁道部前头举办
+hello:
+    msg: 黑夜给了我黑色的眼睛，我却用它来寻找光明
+
+
