@@ -51,7 +51,7 @@ public class MultiThreadProcessMain {
                 MultiThreadProcessTaskUnit.fw.close();
                 MultiThreadProcessTaskUnit.modelFw.close();
                 Long end = System.currentTimeMillis();
-                System.out.println(String.format("Multi thread is processed! It costs %s%s", (end - begin) / (1000 * 60), "minutes"));
+                System.out.println(String.format("Multi thread is processed! It costs %s%s", batchRunTask.df.format(Double.valueOf(end - begin) / (1000 * 60)), "minutes"));
                 break;
             }else {
                 Thread.sleep(5000);

@@ -1,0 +1,153 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import java.util.ArrayList
+global ResResult resResult;
+
+// 西药相互作用	商品名为利福平	类别７（主要成分）中含有硝苯地平		禁忌	优先扣除处方中总价高的药品
+rule "westernMedicineInteraction:西药相互作用(利福平 drug with 硝苯地平)"
+salience 5000
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(commonName == "利福平", $theDrugId: drugId)
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "硝苯地平") from $drugList)
+then
+    $drugList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index ++){
+        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(1);
+        ruleResult.setMessage("westernMedicineInteraction:西药相互作用(利福平 drug with 硝苯地平)");
+        ruleResult.setRuleMark("westernMedicineInteraction");
+        ruleResult.setRuleNo("西药相互作用(利福平 drug with 硝苯地平)");
+        ruleResult.setDrugId(model.getDrugId());
+         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                      if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                          drugInfoRuleModel.setBuyAmount(0.00);
+                          drugInfoRuleModel.setOmit(true);
+                      }
+                  }
+        resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo);
+ end
+
+ //西药相互作用	类别７（主要成分）中含有硫酸氯吡格雷	类别７（主要成分）中含有奥美拉唑		禁忌	优先扣除处方中总价高的药品
+ rule "westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)"
+ salience 5000
+ lock-on-active true
+ when
+     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId)
+     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "奥美拉唑") from $drugList)
+ then
+     $drugList = OrderInfoRuleModel.removeZero($dupList);
+     for(int index = 1; index < $dupList.size(); index ++){
+         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+         RuleResult ruleResult = new RuleResult();
+         ruleResult.setRuleCheckObjectType(1);
+         ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)");
+         ruleResult.setRuleMark("westernMedicineInteraction");
+         ruleResult.setRuleNo("西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)");
+         ruleResult.setDrugId(model.getDrugId());
+          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                           drugInfoRuleModel.setBuyAmount(0.00);
+                           drugInfoRuleModel.setOmit(true);
+                       }
+                   }
+         resResult.getRuleResultList().add(ruleResult);
+     }
+     update($orderInfo);
+  end
+
+// 西药相互作用	类别７（主要成分）中含有硫酸氯吡格雷	类别７（主要成分）中含有埃索拉唑		禁忌	优先扣除处方中总价高的药品
+  rule "westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)"
+   salience 5000
+   lock-on-active true
+   when
+       $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+       $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId)
+       $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "埃索拉唑") from $drugList)
+   then
+       $drugList = OrderInfoRuleModel.removeZero($dupList);
+       for(int index = 1; index < $dupList.size(); index ++){
+           DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+           RuleResult ruleResult = new RuleResult();
+           ruleResult.setRuleCheckObjectType(1);
+           ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)");
+           ruleResult.setRuleMark("westernMedicineInteraction");
+           ruleResult.setRuleNo("西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)");
+           ruleResult.setDrugId(model.getDrugId());
+            for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                         if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                             drugInfoRuleModel.setBuyAmount(0.00);
+                             drugInfoRuleModel.setOmit(true);
+                         }
+                     }
+           resResult.getRuleResultList().add(ruleResult);
+       }
+       update($orderInfo);
+    end
+ //西药相互作用	诊断中含有“不完全房室传导阻滞”或“病窦综合征”或“病态窦房结综合征”	类别７（主要成分）中含有苯磺酸氨氯地平	类别７（主要成分）中含有胺碘酮	禁忌	优先扣除处方中总价高的药品
+ rule "westernMedicineInteraction:西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)"
+ salience 5000
+ lock-on-active true
+ when
+     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList, (diseaseInfoList contains "不完全房室传导阻滞" || diseaseInfoList contains "病窦综合征" || diseaseInfoList contains "病态窦房结综合征"))
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "苯磺酸氨氯地平", $theDrugId: drugId)
+     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "胺碘酮") from $drugList)
+ then
+     $drugList = OrderInfoRuleModel.removeZero($dupList);
+     for(int index = 1; index < $dupList.size(); index ++){
+         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+         RuleResult ruleResult = new RuleResult();
+         ruleResult.setRuleCheckObjectType(1);
+         ruleResult.setMessage("westernMedicineInteraction:西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)");
+         ruleResult.setRuleMark("westernMedicineInteraction");
+         ruleResult.setRuleNo("西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)");
+         ruleResult.setDrugId(model.getDrugId());
+          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                           drugInfoRuleModel.setBuyAmount(0.00);
+                           drugInfoRuleModel.setOmit(true);
+                       }
+                   }
+         resResult.getRuleResultList().add(ruleResult);
+     }
+     update($orderInfo);
+  end
+
+  // 西药相互作用	类别７（主要成分）中含有阿法骨化醇	类别７（主要成分）中含有碳酸钙D3		禁忌	优先扣除处方中总价高的药品
+rule "westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with 碳酸钙D3)"
+ salience 5000
+ lock-on-active true
+ when
+     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "阿法骨化醇", $theDrugId: drugId)
+     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "碳酸钙D3") from $drugList)
+ then
+     $drugList = OrderInfoRuleModel.removeZero($dupList);
+     for(int index = 1; index < $dupList.size(); index ++){
+         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+         RuleResult ruleResult = new RuleResult();
+         ruleResult.setRuleCheckObjectType(1);
+         ruleResult.setMessage("westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with 碳酸钙D3)");
+         ruleResult.setRuleMark("westernMedicineInteraction");
+         ruleResult.setRuleNo("西药相互作用(阿法骨化醇 drug with 碳酸钙D3)");
+         ruleResult.setDrugId(model.getDrugId());
+          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                           drugInfoRuleModel.setBuyAmount(0.00);
+                           drugInfoRuleModel.setOmit(true);
+                       }
+                   }
+         resResult.getRuleResultList().add(ruleResult);
+     }
+     update($orderInfo);
+  end
+

@@ -39,15 +39,7 @@ public class OrderInfoRuleModel extends ResResult{
 	private List<Long> hisDrugIds = Lists.newArrayList(); // 历史用药
 	private List<String> hisDiseases = Lists.newArrayList(); // 历史疾病
 	private PatientInfoRuleModel patientInfoRuleModel; // 当前病人信息
-	private String provinceId; // 省
-	private String cityId;	   // 市
-	private String areaId;     // 区
-	@XmlAttribute(name="ruleMark")
 	private String ruleMark;
-	@XmlAttribute(name="caseType")
-	private String caseType;
-	private String expect;
-	private String unExcept;
 
 	public Integer getSysCategory() {
 		return sysCategory;
@@ -131,46 +123,6 @@ public class OrderInfoRuleModel extends ResResult{
 		this.innerSysCategory = innerSysCategory;
 	}
 
-	public String getProvinceId() {
-		return provinceId;
-	}
-
-	public void setProvinceId(String provinceId) {
-		this.provinceId = provinceId;
-	}
-
-	public String getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(String cityId) {
-		this.cityId = cityId;
-	}
-
-	public String getAreaId() {
-		return areaId;
-	}
-
-	public void setAreaId(String areaId) {
-		this.areaId = areaId;
-	}
-
-	public String getRuleMark() {
-		return ruleMark;
-	}
-
-	public void setRuleMark(String ruleMark) {
-		this.ruleMark = ruleMark;
-	}
-
-	public String getCaseType() {
-		return caseType;
-	}
-
-	public void setCaseType(String caseType) {
-		this.caseType = caseType;
-	}
-
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
@@ -188,22 +140,6 @@ public class OrderInfoRuleModel extends ResResult{
 		buff.append(JSON.toJSONString(this) + "\n");
 		buff.append("-----OrderInfoRuleModel end--");
 		return buff.toString();
-	}
-
-	public String getExpect() {
-		return expect;
-	}
-
-	public void setExpect(String expect) {
-		this.expect = expect;
-	}
-
-	public String getUnExcept() {
-		return unExcept;
-	}
-
-	public void setUnExcept(String unExcept) {
-		this.unExcept = unExcept;
 	}
 
 	public static ArrayList<DrugInfoRuleModel> removeZero(ArrayList $dupList) {

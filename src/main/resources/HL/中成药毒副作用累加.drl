@@ -1,0 +1,65 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import java.util.ArrayList
+global ResResult resResult;
+
+// 中成药毒副作用累加	商品名为脑安胶囊	商品名为复方丹参滴丸		禁忌	优先扣除处方中总价高的药品
+rule "ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)"
+salience 5000
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList:drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit, commonName == "脑安胶囊") from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "复方丹参滴丸") from $drugInfoList)
+then
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index ++){
+         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(1);
+        ruleResult.setMessage("ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)");
+        ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
+        ruleResult.setRuleNo("中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)");
+        ruleResult.setDrugId(model.getDrugId());
+         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                      if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                          drugInfoRuleModel.setBuyAmount(0.00);
+                          drugInfoRuleModel.setOmit(true);
+                      }
+                  }
+        resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo);
+ end
+
+ // 中成药毒副作用累加	商品名为脑安胶囊	商品名为复方丹参片		禁忌	优先扣除处方中总价高的药品
+ rule "ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参片)"
+ salience 5000
+ lock-on-active true
+ when
+     $orderInfo:OrderInfoRuleModel($drugInfoList:drugInfoList)
+     $drugInfo: DrugInfoRuleModel(!omit, commonName == "脑安胶囊") from $drugInfoList
+     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "复方丹参片") from $drugInfoList)
+ then
+     $dupList = OrderInfoRuleModel.removeZero($dupList);
+     for(int index = 1; index < $dupList.size(); index ++){
+          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+         RuleResult ruleResult = new RuleResult();
+         ruleResult.setRuleCheckObjectType(1);
+         ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
+         ruleResult.setRuleNo("中成药毒副作用累加(脑安胶囊 with 复方丹参片)");
+         ruleResult.setDrugId(model.getDrugId());
+          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                           drugInfoRuleModel.setBuyAmount(0.00);
+                           drugInfoRuleModel.setOmit(true);
+                       }
+                   }
+         resResult.getRuleResultList().add(ruleResult);
+     }
+     update($orderInfo);
+  end

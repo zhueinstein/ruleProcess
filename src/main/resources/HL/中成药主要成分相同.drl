@@ -10,26 +10,24 @@ import java.util.Collections
 import java.util.Comparator
 global ResResult resResult;
 
-//HL0012	中成药功效类别重复	商品名为脑心通胶囊	商品名为利脑心胶囊				禁忌	优先扣除处方中总价高的药品
+// 中成药主要成分相同	商品名为金水宝胶囊	商品名为百令胶囊		禁忌	优先扣除处方中总价高的药品
 
-
-
-rule "HL0012:中成药功效类别重复"
-salience 4989
+rule "ChinesePatentMedicineInGredientDuplicate:中成药主要成分相同(金水宝胶囊 with 百令胶囊)"
+salience 4995
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
-    $drugInfo: DrugInfoRuleModel(commonName.trim() == "血脂康胶囊" , $theDrugId: drugId, $main: mainIngredients) from $drugInfoList
-    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "利脑心胶囊", drugId != $theDrugId) from $drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit, commonName == "金水宝胶囊") from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "百令胶囊") from $drugInfoList)
 then
     $dupList.add($drugInfo);
-    $dupList = OrderInfoRuleModel.removeZero($dupList);
+   $dupList = OrderInfoRuleModel.removeZero($dupList);
     for(int index = 1; index < $dupList.size(); index++){
        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
-       ruleResult.setRuleMark("HL0012");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setRuleMark("ChinesePatentMedicineInGredientDuplicate");
+       ruleResult.setRuleNo("中成药主要成分相同(金水宝胶囊 with 百令胶囊)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -42,25 +40,24 @@ then
     }
     update($orderInfo)
  end
+ // 中成药主要成分相同	商品名为脑安胶囊	商品名为华佗再造丸		禁忌	优先扣除处方中总价高的药品
 
-// HL0013	中成药功效类别重复	商品名为脑心通胶囊	商品名为血塞通软胶囊				禁忌	优先扣除处方中总价高的药品
-
-rule "HL0013:中成药功效类别重复"
-salience 4989
+rule "ChinesePatentMedicineInGredientDuplicate:中成药主要成分相同(脑安胶囊 with 华佗再造丸)"
+salience 4995
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
-    $drugInfo: DrugInfoRuleModel(commonName.trim() == "血脂康胶囊" , $theDrugId: drugId, $main: mainIngredients) from $drugInfoList
-    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "血塞通软胶囊", drugId != $theDrugId) from $drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit, commonName == "脑安胶囊") from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "华佗再造丸") from $drugInfoList)
 then
     $dupList.add($drugInfo);
-    $dupList = OrderInfoRuleModel.removeZero($dupList);
+   $dupList = OrderInfoRuleModel.removeZero($dupList);
     for(int index = 1; index < $dupList.size(); index++){
        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
-       ruleResult.setRuleMark("HL0013");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setRuleMark("ChinesePatentMedicineInGredientDuplicate");
+       ruleResult.setRuleNo("中成药主要成分相同(脑安胶囊 with 华佗再造丸)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -73,5 +70,3 @@ then
     }
     update($orderInfo)
  end
-
-

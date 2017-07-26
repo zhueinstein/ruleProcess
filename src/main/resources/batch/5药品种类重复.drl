@@ -20,14 +20,8 @@ when
     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit && drugId != $id, pharmacologyClass == $theClass) from $drugInfoList)
 
 then
-        System.out.println("111111111111111111111 == " + $orderInfo.getMessage());
         $dupList.add($drugInfo);
        $dupList = OrderInfoRuleModel.removeZero($dupList);
-        for (Object o : $dupList) {
-            System.out.println(((DrugInfoRuleModel)o).isOmit());
-            System.out.println(((DrugInfoRuleModel)o).getDrugId() + " = " + ((DrugInfoRuleModel)o).getBuyAmount() *  ((DrugInfoRuleModel)o).getPrice());
-        }
-
         for(int index = 1 ; index < $dupList.size(); index++){
           DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
           RuleResult ruleResult = new RuleResult();
@@ -45,6 +39,5 @@ then
 
           resResult.getRuleResultList().add(ruleResult);
         }
-        System.out.println("222222222222222222222");
         update($orderInfo)
 end

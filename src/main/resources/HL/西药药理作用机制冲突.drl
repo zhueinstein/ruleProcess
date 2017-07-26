@@ -10,17 +10,14 @@ import java.util.Collections
 import java.util.Comparator
 global ResResult resResult;
 
-//HL0011	中成药与西药成分重复	商品名为血脂康胶囊	"1.类别1为西药或西药复方制剂；  2.类别4为他汀类."				禁忌	去掉血脂康胶囊
-
-
-
-rule "HL0011:中成药与西药成分重复"
-salience 4990
+//西药药理作用机制冲突	类别7（主要成分）为格列齐特的药品	类别7（主要成分）为那格列奈的药品		禁忌	优先扣除处方中总价高的药品
+rule "westernMedicinePharmacologic:西药药理作用机制冲突(格列齐特 drug with 那格列奈)"
+salience 4993
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
-    $drugInfo: DrugInfoRuleModel(commonName == "血脂康胶囊" , $theDrugId: drugId, $main: mainIngredients) from $drugInfoList
-    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, (firstCategory == "西药" || firstCategory == "西药复方制剂"), drugId != $theDrugId,otherCategory contains "他汀类") from $drugInfoList)
+    $drugInfo: DrugInfoRuleModel(mainIngredients contains "格列齐特" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,  drugId != $theDrugId, mainIngredients contains "那格列奈") from $drugInfoList)
 then
     $dupList.add($drugInfo);
     $dupList = OrderInfoRuleModel.removeZero($dupList);
@@ -28,8 +25,8 @@ then
        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
-       ruleResult.setRuleMark("HL0011");
-       ruleResult.setRuleNo("中成药与西药成分重复");
+       ruleResult.setRuleMark("westernMedicinePharmacologic");
+       ruleResult.setRuleNo("西药药理作用机制冲突(格列齐特 drug with 那格列奈)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

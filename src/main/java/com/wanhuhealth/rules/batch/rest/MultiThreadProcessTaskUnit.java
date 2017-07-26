@@ -66,7 +66,6 @@ public class MultiThreadProcessTaskUnit {
         try {
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data ……"));
             List<OrderInfo>  orderInfos = orderInfoMapper.findBetween2Date(start, end);
-            System.out.println(orderInfos.size());
             List<OrderInfo> orderInfoList = mergeOrderInfo(orderInfos);
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data complete!"));
             Integer totalTaskCount = orderInfoList.size();
@@ -77,19 +76,23 @@ public class MultiThreadProcessTaskUnit {
                 modelFw.write(JSON.toJSONString(orderInfoRuleModel));
                 modelFw.write("\n");
                 modelFw.flush();
-//                kieSession = kieContainer.newKieSession(sessionName);
                 ResResult resResult = new ResResult();
-//                kieSession.setGlobal("resResult", resResult);
-//                kieSession.insert(orderInfoRuleModel);
-//                kieSession.fireAllRules();
-//                kieSession.dispose();
+                kieSession = kieContainer.newKieSession(sessionName);
+                kieSession.setGlobal("resResult", resResult);
+                kieSession.insert(orderInfoRuleModel);
+                kieSession.fireAllRules();
+                kieSession.dispose();
                 kieSession = kieContainer.newKieSession(hlSessionName);
                 kieSession.setGlobal("resResult", resResult);
                 kieSession.insert(orderInfoRuleModel);
+                kieSession.fireAllRules();
                 kieSession.dispose();
                 orderInfoRuleModel.setRuleResultList(resResult.getRuleResultList());
                 handleMessage(orderInfo, orderInfoRuleModel);
-                System.err.println(String.format("线程: %s processing is %s%s", threadName, (count/totalTaskCount)* 100, "%"));
+                if(resResult.getRuleResultList().size() != 0) {
+                    System.err.println(resResult.getRuleResultList().size());
+                }
+//                System.err.println(String.format("线程: %s processing is %s%s", threadName, (count/totalTaskCount)* 100, "%"));
             }
 
         }catch (Exception e){
@@ -113,7 +116,6 @@ public class MultiThreadProcessTaskUnit {
                     // 创建一个药品的数据模型
                     drugInfoRuleModel = buildDrugInfoRuleModel(drugInformation);
                     orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
-
                     // 使用频次
                     drugInfoRuleModel.setFrequency(Integer.valueOf(drugInformation.getFrequency()));
                     // 购买数量

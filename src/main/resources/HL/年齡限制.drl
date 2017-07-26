@@ -1,0 +1,36 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import java.util.ArrayList
+global ResResult resResult;
+
+// 年龄限制	患者年龄≥65岁	类别7（主要成分）中包含冰片的中成药药品≥２种		禁忌	优先扣除处方中处方中总价高药品，最终保留1种。
+rule "ageLimit:年龄限制(≥65 drug with 冰片)"
+salience 5000
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel(patientInfoRuleModel.age >= 65 && $drugList: drugInfoList)
+    $dupList: ArrayList(size > 1) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "冰片") from $drugList)
+then
+    $drugList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index ++){
+         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(1);
+        ruleResult.setMessage("ageLimit:年龄限制(≥65 drug with 冰片)");
+        ruleResult.setRuleMark("ageLimit");
+        ruleResult.setRuleNo("年龄限制(≥65 drug with 冰片)");
+        ruleResult.setDrugId(model.getDrugId());
+         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                      if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                          drugInfoRuleModel.setBuyAmount(0.00);
+                          drugInfoRuleModel.setOmit(true);
+                      }
+                  }
+        resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo);
+ end

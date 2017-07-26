@@ -1,0 +1,98 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import com.wanhuhealth.rules.batch.drools.RuleResult
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+global ResResult resResult;
+
+//中西复方制剂与西药制剂成分重复	商品名为消渴丸	"1.类别1为西药或西药复方制剂；  2.类别7(主要成分)包含格列本脲；"				禁忌	去掉消渴丸
+
+rule "CompoundChineseWesternAndWesternMedicine:中西复方制剂与西药制剂成分重复(消渴丸 drug with 格列本脲)"
+salience 4985
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(commonName.trim() == "消渴丸" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,(firstCategory == "西药"|| firstCategory == "西药复方制剂"), mainIngredients contains "格列本脲", drugId != $theDrugId) from $drugInfoList)
+then
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
+       ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复(消渴丸 drug with 格列本脲)");
+       ruleResult.setDrugId($drugInfo.getDrugId());
+       $drugInfo.setBuyAmount(0.00);
+       $drugInfo.setOmit(true);
+       resResult.getRuleResultList().add(ruleResult);
+        update($orderInfo);
+ end
+
+// 中西复方制剂与西药制剂成分重复	商品名为珍菊降压片	"1.类别1为西药或西药复方制剂；   2.类别7(主要成分)包含盐酸可乐定；"		禁忌	去掉珍菊降压片
+rule "CompoundChineseWesternAndWesternMedicine:中西复方制剂与西药制剂成分重复(珍菊降压片 drug with 盐酸可乐定)"
+salience 4984
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(commonName.trim() == "珍菊降压片" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,(firstCategory == "西药"|| firstCategory == "西药复方制剂"), mainIngredients contains "盐酸可乐定", drugId != $theDrugId) from $drugInfoList)
+then
+     RuleResult ruleResult = new RuleResult();
+           ruleResult.setRuleCheckObjectType(2);
+           ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
+           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复(珍菊降压片 drug with 盐酸可乐定)");
+           ruleResult.setDrugId($drugInfo.getDrugId());
+           $drugInfo.setBuyAmount(0.00);
+           $drugInfo.setOmit(true);
+           resResult.getRuleResultList().add(ruleResult);
+           update($orderInfo);
+ end
+//中西复方制剂与西药制剂成分重复	商品名为珍菊降压片	"1.类别1为西药或西药复方制剂；  2.类别7(主要成分)包含氢氯噻嗪"		禁忌	去掉珍菊降压片
+
+
+
+rule "CompoundChineseWesternAndWesternMedicine:中西复方制剂与西药制剂成分重复(珍菊降压片 drug with 氢氯噻嗪)"
+salience 4983
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(commonName.trim() == "珍菊降压片" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,(firstCategory == "西药"|| firstCategory == "西药复方制剂"), mainIngredients contains "氢氯噻嗪", drugId != $theDrugId) from $drugInfoList)
+then
+     RuleResult ruleResult = new RuleResult();
+           ruleResult.setRuleCheckObjectType(2);
+           ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
+           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复(珍菊降压片 drug with 氢氯噻嗪)");
+           ruleResult.setDrugId($drugInfo.getDrugId());
+           $drugInfo.setBuyAmount(0.00);
+           $drugInfo.setOmit(true);
+           resResult.getRuleResultList().add(ruleResult);
+           update($orderInfo);
+ end
+//中西复方制剂与西药制剂成分重复	商品名为二维三七桂利嗪胶囊	"1.类别1为西药或西药复方制剂；  2.类别7(主要成分)包含盐酸氟桂利嗪"		禁忌	去掉二维三七桂利嗪胶囊
+
+
+
+rule "CompoundChineseWesternAndWesternMedicine:中西复方制剂与西药制剂成分重复(二维三七桂利嗪胶囊 drug with 盐酸氟桂利嗪)"
+salience 4982
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(commonName.trim() == "二维三七桂利嗪胶囊" , $theDrugId: drugId) from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit,(firstCategory == "西药"|| firstCategory == "西药复方制剂"), mainIngredients contains "盐酸氟桂利嗪", drugId != $theDrugId) from $drugInfoList)
+then
+     RuleResult ruleResult = new RuleResult();
+           ruleResult.setRuleCheckObjectType(2);
+           ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
+           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复(二维三七桂利嗪胶囊 drug with 盐酸氟桂利嗪)");
+           ruleResult.setDrugId($drugInfo.getDrugId());
+           $drugInfo.setBuyAmount(0.00);
+           $drugInfo.setOmit(true);
+           resResult.getRuleResultList().add(ruleResult);
+           update($orderInfo);
+ end
+
+
