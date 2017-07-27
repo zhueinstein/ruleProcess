@@ -34,4 +34,10 @@ logging:
        com.Learning:DEBUG
     file: D:/apache-tomcat-8.0.35/logs/learning.log
 
-
+os:
+  fileDir:
+    windows: d://drools_data/
+    mac: /Users/zcx/drools_data
+  fileName:
+    txt: DroolsResult_%s.txt
+    xlsx: RuleResult_%s.xlsx

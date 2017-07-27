@@ -29,7 +29,6 @@ then
     $drugInfo.setBuyAmount(0.00);
     $drugInfo.setOmit(true);
     resResult.getRuleResultList().add(ruleResult);
-    System.out.println("123123===================>");
     update($orderInfo)
  end
 

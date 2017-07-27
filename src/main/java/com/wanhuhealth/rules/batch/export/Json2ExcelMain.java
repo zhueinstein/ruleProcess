@@ -22,13 +22,20 @@ import java.util.*;
 public class Json2ExcelMain {
     private static DecimalFormat df   = new DecimalFormat("######0.00");
     private static Hashtable<String, Double> ht = new Hashtable<String, Double>();
+
+//    static String data_direction = "D:\\drools_data//"; // window
+    static String data_direction = "/Users/zcx/drools_data/"; // mac
+    static String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
     public static void main(String[] args) {
         export(readList());
     }
-    private static String outFileName = "d://drools_data//RuleResult"+ DateUtils.formatDate(new Date(), "yyyyMMddHHmm") +".xlsx";
-    private static String loadFileName = "d://drools_data//DroolsResult_";
+    private static String outFileName = String.format("%sRuleResult_%s.xlsx",data_direction, tail);
+    private static String loadFileName = String.format("%sDroolsResult_", data_direction);
     static {
-        File file = new File("D:\\drools_data");
+        File file = new File(data_direction);
+        if (!file.exists()){
+            file.mkdir();
+        }
         if(file.isDirectory()){
             Long temp;
             Long largest = 0L;
@@ -43,7 +50,10 @@ public class Json2ExcelMain {
                 }
             }
             loadFileName += largest + ".txt";
+        }else{
+            System.out.println("文件");
         }
+
     }
     private static List<OutFormatMessage> readList(){
         List<OutFormatMessage> list = Lists.newArrayList();
@@ -142,16 +152,17 @@ public class Json2ExcelMain {
 //        return ht;
     }
     private static void export(List<OutFormatMessage> list){
-        final Integer total = list.size();
         final CountClick click = new CountClick();
+        click.setTotal(list.size() * 24.0);
+
         ExportExcel excel = DefaultExportExcel.newInstance(new ExportExcel.CellBuilder() {
             @Override
             public Cell builder(Row row, int index, Object data) {
-                if (index > 23) {
+                if (index > 24) {
                     return null;
                 }
                 click.setCount(click.getCount() + 1);
-                System.out.println("进度  " + Double.valueOf(click.getCount())/(23 * total)* 100 + "%" );
+                click.processing(click);
                 Cell cell = row.createCell(index);
                 OutFormatMessage vo = (OutFormatMessage) data;
                 switch (index) {
@@ -181,73 +192,77 @@ public class Json2ExcelMain {
                         break;
                     case 6:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue("男");
+                        cell.setCellValue(vo.getPatientIdCard());
                         break;
                     case 7:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(vo.getAge());
+                        cell.setCellValue("男");
                         break;
                     case 8:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(vo.getDiseases());
+                        cell.setCellValue(vo.getAge());
                         break;
                     case 9:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(vo.getCycle());
+                        cell.setCellValue(vo.getDiseases());
                         break;
                     case 10:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(vo.getDrugName());
+                        cell.setCellValue(vo.getCycle());
                         break;
                     case 11:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(vo.getPackageSpecification());
+                        cell.setCellValue(vo.getDrugName());
                         break;
                     case 12:
+                        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                        cell.setCellValue(vo.getPackageSpecification());
+                        break;
+                    case 13:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(df.format(Double.valueOf(vo.getUseAmount())));
                         break;
-                    case 13:
+                    case 14:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         cell.setCellValue(FrequencyEnum.getName(vo.getFrequency()));
                         break;
-                    case 14:
+                    case 15:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(df.format(Double.valueOf(vo.getPrice())));
                         break;
-                    case 15:
+                    case 16:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(Double.valueOf(vo.getNumber()));
                         break;
-                    case 16:
+                    case 17:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(df.format(Double.valueOf(vo.getTotal())));
                         break;
-                    case 17:
+                    case 18:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         if(StringUtils.isNotBlank(vo.getOrderTotal())) {
                             cell.setCellValue(df.format(ht.get(vo.getOrderNO())));
                         }
                         break;
-                    case 18:
+                    case 19:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         cell.setCellValue(vo.getRuleViolates());
                         break;
-                    case 19:
+                    case 20:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(Double.valueOf(vo.getAuditNumber()));
                         break;
-                    case 20:
+                    case 21:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
                         cell.setCellValue(df.format(Double.valueOf(vo.getAuditTotal())));
                         break;
-                    case 21:
+                    case 22:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         if(StringUtils.isNotBlank(vo.getOrderAuditTotal())) {
                             cell.setCellValue(df.format(ht.get(vo.getOrderNO() + "A")));
                         }
                         break;
-                    case 22:
+                    case 23:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         if(StringUtils.isNotBlank(vo.getOrderAuditTotal())) {
                             Double gap = (ht.get(vo.getOrderNO()) - ht.get(vo.getOrderNO() + "A")) * 100;
@@ -260,8 +275,8 @@ public class Json2ExcelMain {
         });
 //
 
-        excel.setMaxCell(23);
-        excel.setExportTitles(Arrays.asList("订单号","合并前订单数", "日期","社区医院", "患者姓名", "万户卡号", "性别", "年龄", "疾病", "用药周期", "药品名称",
+        excel.setMaxCell(24);
+        excel.setExportTitles(Arrays.asList("订单号","合并前订单数", "日期","社区医院", "患者姓名", "万户卡号","身份证号", "性别", "年龄", "疾病", "用药周期", "药品名称",
                 "规格","单次用量","频次","单价", "数量", "药品总价","处方总价", "违规规则代号", "审核后数量","审核后总价","审核后处方总价","节约比例"));
         File file = new File(outFileName);
         try {

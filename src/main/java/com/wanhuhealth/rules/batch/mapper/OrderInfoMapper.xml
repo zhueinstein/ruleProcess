@@ -12,6 +12,7 @@
         <result column="patient_age" jdbcType="VARCHAR" property="patientAge" />
         <result column="patient_sex" jdbcType="VARCHAR" property="patientSex" />
         <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+        <result column="patient_id_card" jdbcType="VARCHAR" property="patientIdCard" />
         <result column="account_no" jdbcType="VARCHAR" property="patientWanHuCard" />
         <collection property="diseaseInfoList" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.batch.mapper.DiseaseInfoMapper.diseaseInfoList"/>
          <collection property="drugInformationList" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.batch.mapper.DrugInformationMapper.drugInformationList"/>
@@ -21,7 +22,7 @@
        SELECT
               t.id,t.order_no,dh.name as hospitalName ,t.order_date AS orderDate,t.cycle,
               t.`patient_age`,t.`patient_id`, t.`patient_sex`, t.`patient_name`,
-              bpi.`account_no`
+              bpi.`account_no`, t.patient_id_card
         FROM order_info t INNER JOIN doctor_hospital dh ON t.hospital_id = dh.id
         inner join `billing_payment_info` bpi on bpi.`patient_id` = t.`patient_id`
         WHERE

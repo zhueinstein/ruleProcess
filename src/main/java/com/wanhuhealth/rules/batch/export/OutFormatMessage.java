@@ -10,6 +10,7 @@ public class OutFormatMessage {
  private String hospital; //社区医院
  private String patientName; //患者姓名
  private String wanhuCard; //万户卡号
+ private String patientIdCard; // 身份证号
  private String sex; //性别
  private String age; //年龄
  private String diseases; //疾病
@@ -200,5 +201,13 @@ public class OutFormatMessage {
 
     public void setOrderAuditTotal(String orderAuditTotal) {
         this.orderAuditTotal = orderAuditTotal;
+    }
+
+    public String getPatientIdCard() {
+        return patientIdCard;
+    }
+
+    public void setPatientIdCard(String patientIdCard) {
+        this.patientIdCard = patientIdCard;
     }
 }

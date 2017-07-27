@@ -17,10 +17,9 @@ when
 then
     RuleResult ruleResult = new RuleResult();
     ruleResult.setRuleCheckObjectType(2);
-//    ruleResult.setMessage("用法用量超限：药品每日用量超过说明书最大值（" + (int)($max+0) + $drugInfo.getUseDoseUnit() + "）");
     ruleResult.setRuleMark("dailyAmtExceed");
     ruleResult.setRuleNo("单日用量超限");
-     ruleResult.setDrugId($drugInfo.getDrugId());
+    ruleResult.setDrugId($drugInfo.getDrugId());
     if(Math.ceil($max * $drugInfo.getPeriod() / $drugInfo.getPackageSize()) < $drugInfo.getBuyAmount()){
         $drugInfo.setBuyAmount(Math.ceil($max * $drugInfo.getPeriod() / $drugInfo.getPackageSize()));
     }

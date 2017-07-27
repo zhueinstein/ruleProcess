@@ -118,11 +118,6 @@
       <version>1.3.5.RELEASE</version>
     </dependency>
     <dependency>
-      <groupId>com.wanhuhealth</groupId>
-      <artifactId>spring-boot-starter-hello</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
     </dependency>

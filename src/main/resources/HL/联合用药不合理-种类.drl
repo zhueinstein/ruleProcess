@@ -20,12 +20,7 @@ when
     $dupList:ArrayList(size > 3) from collect(DrugInfoRuleModel(!omit, diseases contains "高血压", thirCategory == "降血压药单方") from $drugList)
 then
 
-    Collections.sort($dupList, new Comparator<DrugInfoRuleModel>(){
-        @Override
-        public int compare(DrugInfoRuleModel o1, DrugInfoRuleModel o2) {
-            return o1.getPrice().compareTo(o2.getPrice());
-        }
-    });
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
 
     for(int index = 3; index < $dupList.size(); index++){
         DrugInfoRuleModel model = (DrugInfoRuleModel)$dupList.get(index);

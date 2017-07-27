@@ -34,6 +34,8 @@ public class OrderInfo {
     private String patientSex;
     // 患者年龄
     private String patientAge;
+    // 患者身份证号
+    private String patientIdCard;
     // 万户卡号
     private String patientWanHuCard;
     //违规规则代号
@@ -171,5 +173,13 @@ public class OrderInfo {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    public String getPatientIdCard() {
+        return patientIdCard;
+    }
+
+    public void setPatientIdCard(String patientIdCard) {
+        this.patientIdCard = patientIdCard;
     }
 }

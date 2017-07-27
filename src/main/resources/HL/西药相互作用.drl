@@ -13,9 +13,10 @@ salience 5000
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
-    $drugInfo: DrugInfoRuleModel(commonName == "利福平", $theDrugId: drugId)
-    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "硝苯地平") from $drugList)
+    $drugInfo: DrugInfoRuleModel(commonName == "利福平", $theDrugId: drugId) from $drugList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, drugId != $theDrugId, mainIngredients contains "硝苯地平") from $drugList)
 then
+    $dupList.add($drugInfo);
     $drugList = OrderInfoRuleModel.removeZero($dupList);
     for(int index = 1; index < $dupList.size(); index ++){
         DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
@@ -42,10 +43,11 @@ then
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
-     $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId)
-     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "奥美拉唑") from $drugList)
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId) from $drugList
+     $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, $theDrugId != drugId, mainIngredients contains "奥美拉唑") from $drugList)
  then
-     $drugList = OrderInfoRuleModel.removeZero($dupList);
+       $dupList.add($drugInfo);
+     $dupList = OrderInfoRuleModel.removeZero($dupList);
      for(int index = 1; index < $dupList.size(); index ++){
          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
          RuleResult ruleResult = new RuleResult();
@@ -71,10 +73,11 @@ then
    lock-on-active true
    when
        $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
-       $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId)
+       $drugInfo: DrugInfoRuleModel(mainIngredients contains "硫酸氯吡格雷", $theDrugId: drugId) from $drugList
        $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "埃索拉唑") from $drugList)
    then
-       $drugList = OrderInfoRuleModel.removeZero($dupList);
+       $dupList.add($drugInfo);
+       $dupList = OrderInfoRuleModel.removeZero($dupList);
        for(int index = 1; index < $dupList.size(); index ++){
            DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
            RuleResult ruleResult = new RuleResult();
@@ -99,10 +102,11 @@ then
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList, (diseaseInfoList contains "不完全房室传导阻滞" || diseaseInfoList contains "病窦综合征" || diseaseInfoList contains "病态窦房结综合征"))
-     $drugInfo: DrugInfoRuleModel(mainIngredients contains "苯磺酸氨氯地平", $theDrugId: drugId)
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "苯磺酸氨氯地平", $theDrugId: drugId) from $drugList
      $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "胺碘酮") from $drugList)
  then
-     $drugList = OrderInfoRuleModel.removeZero($dupList);
+     $dupList.add($drugInfo);
+     $dupList = OrderInfoRuleModel.removeZero($dupList);
      for(int index = 1; index < $dupList.size(); index ++){
          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
          RuleResult ruleResult = new RuleResult();
@@ -128,10 +132,11 @@ rule "westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with �
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
-     $drugInfo: DrugInfoRuleModel(mainIngredients contains "阿法骨化醇", $theDrugId: drugId)
+     $drugInfo: DrugInfoRuleModel(mainIngredients contains "阿法骨化醇", $theDrugId: drugId) from $drugList
      $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, mainIngredients contains "碳酸钙D3") from $drugList)
  then
-     $drugList = OrderInfoRuleModel.removeZero($dupList);
+     $dupList.add($drugInfo);
+     $dupList = OrderInfoRuleModel.removeZero($dupList);
      for(int index = 1; index < $dupList.size(); index ++){
          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
          RuleResult ruleResult = new RuleResult();

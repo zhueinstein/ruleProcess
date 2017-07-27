@@ -11,6 +11,7 @@ import com.wanhuhealth.rules.batch.mapper.OrderInfoMapper;
 import com.wanhuhealth.rules.batch.model.DiseaseInfo;
 import com.wanhuhealth.rules.batch.model.DrugInformation;
 import com.wanhuhealth.rules.batch.model.OrderInfo;
+import com.wanhuhealth.rules.utils.CountClick;
 import com.wanhuhealth.rules.utils.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -45,22 +46,22 @@ public class MultiThreadProcessTaskUnit {
     static FileWriter fw = null;
     static FileWriter modelFw = null;
     static KieContainer kieContainer;
-    static String direction = "d://aab"; // window
-//    static String direction = "d://aab"; // mac
+//    static String direction = "d://drools_data//"; // window
+    static String direction = "/Users/zcx/drools_data/"; // mac
     static{
         try {
             File  fileD = new File(direction);
             if(fileD.exists()){
                 if(!fileD.isDirectory()){
-                    System.out.println("aab的文件已经存在");
+                    System.out.println("drools_data的文件已经存在");
                 }
             }else{
                 fileD.mkdir();
             }
             String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
-            File file = new File(String.format(direction + "//DroolsResult_%s.txt", tail));
+            File file = new File(String.format(direction + "DroolsResult_%s.txt", tail));
             fw = new FileWriter(file, true);
-            File modelFile = new File(String.format(direction + "//DroolsModels_%s.txt", tail));
+            File modelFile = new File(String.format(direction + "DroolsModels_%s.txt", tail));
             modelFw = new FileWriter(modelFile, true);
             KieServices kieService = KieServices.Factory.get();
             kieContainer = kieService.getKieClasspathContainer();
@@ -71,16 +72,17 @@ public class MultiThreadProcessTaskUnit {
 
     public void batchRun(String start, String end) throws Exception {
         String threadName = Thread.currentThread().getName();
-        Double count = 0.0;
+        CountClick click = new CountClick();
+        click.setThreadName(threadName);
         try {
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data ……"));
 
             List<OrderInfo> orderInfoList = mergeOrderInfo(orderInfoMapper.findBetween2Date(start, end));
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data complete!"));
-            Integer totalTaskCount = orderInfoList.size();
+            click.setTotal(orderInfoList.size()* 1.0);
             KieSession kieSession;
             for (OrderInfo orderInfo : orderInfoList) {
-                count += 1;
+                click.setCount(click.getCount() + 1);
                 OrderInfoRuleModel orderInfoRuleModel = buildOrderInfoRuleModel(orderInfo);
                 modelFw.write(JSON.toJSONString(orderInfoRuleModel));
                 modelFw.write("\n");
@@ -98,10 +100,7 @@ public class MultiThreadProcessTaskUnit {
                 kieSession.dispose();
                 orderInfoRuleModel.setRuleResultList(resResult.getRuleResultList());
                 handleMessage(orderInfo, orderInfoRuleModel);
-                if(resResult.getRuleResultList().size() != 0) {
-                    System.err.println(resResult.getRuleResultList().size());
-                }
-                System.err.println(String.format("线程: %s processing is %s%s", threadName, (count/totalTaskCount)* 100, "%"));
+                click.processing(click);
             }
 
         }catch (Exception e){
@@ -299,7 +298,7 @@ public class MultiThreadProcessTaskUnit {
                     }
 
                     msg.setAuditNumber(auditNumber);
-
+                    msg.setPatientIdCard(orderInfo.getPatientIdCard());
                     fw.write(JSON.toJSONString(msg));
                     fw.write("\n");
                     fw.flush();

@@ -12,7 +12,7 @@ global ResResult resResult;
 
 // 中成药主要成分相同	商品名为金水宝胶囊	商品名为百令胶囊		禁忌	优先扣除处方中总价高的药品
 
-rule "ChinesePatentMedicineInGredientDuplicate:中成药主要成分相同(金水宝胶囊 with 百令胶囊)"
+rule "ChinesePatentMedicineIngredientDuplicate:中成药主要成分相同(金水宝胶囊 with 百令胶囊)"
 salience 4995
 lock-on-active true
 when
@@ -26,7 +26,7 @@ then
        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
-       ruleResult.setRuleMark("ChinesePatentMedicineInGredientDuplicate");
+       ruleResult.setRuleMark("ChinesePatentMedicineIngredientDuplicate");
        ruleResult.setRuleNo("中成药主要成分相同(金水宝胶囊 with 百令胶囊)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
@@ -42,7 +42,7 @@ then
  end
  // 中成药主要成分相同	商品名为脑安胶囊	商品名为华佗再造丸		禁忌	优先扣除处方中总价高的药品
 
-rule "ChinesePatentMedicineInGredientDuplicate:中成药主要成分相同(脑安胶囊 with 华佗再造丸)"
+rule "ChinesePatentMedicineIngredientDuplicate:中成药主要成分相同(脑安胶囊 with 华佗再造丸)"
 salience 4995
 lock-on-active true
 when
@@ -56,7 +56,7 @@ then
        DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
-       ruleResult.setRuleMark("ChinesePatentMedicineInGredientDuplicate");
+       ruleResult.setRuleMark("ChinesePatentMedicineIngredientDuplicate");
        ruleResult.setRuleNo("中成药主要成分相同(脑安胶囊 with 华佗再造丸)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {

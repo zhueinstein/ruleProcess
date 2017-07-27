@@ -11,16 +11,19 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
-import java.io.File;
 import java.util.List;
 
 /**
  * Created by admin on 2017/6/2.
  */
-public class RulesTest {
+public class RuleTest_westernMedicineMainIngredientDuplicate {
 
+	/**
+	 * 西药主要成分重复	类别1为西药的药品	"1.类别1为西药的药品   2.类别7（主要成分）与条件1的药品相同"		禁忌	优先扣除处方中总价高的药品
+	 * 西药主要成分重复(西药 mainIngredient duplicate 西药)"
+	 */
 		@Test
-		public void test01(){
+		public void westernMedicineMainIngredientDuplicate_01(){
 			OrderInfoRuleModel orderInfoRuleModel = new OrderInfoRuleModel();
 			PatientInfoRuleModel patientInfoRuleModel = new PatientInfoRuleModel();
 			patientInfoRuleModel.setAge(65);
@@ -33,6 +36,7 @@ public class RulesTest {
 			drugInfoRuleModel1.setCommonName("消渴丸");
 			drugInfoRuleModel1.setPrice(1.00);
 			drugInfoRuleModel1.setBuyAmount(3.0);
+			drugInfoRuleModel1.setFirstCategory("西药");
 			drugInfoRuleModel1.setMainIngredients(Lists.newArrayList("冰片"));
 			drugInfoRuleModels.add(drugInfoRuleModel1);
 			DrugInfoRuleModel drugInfoRuleModel2 = new DrugInfoRuleModel();
@@ -40,7 +44,8 @@ public class RulesTest {
 			drugInfoRuleModel2.setCommonName("消渴丸");
 			drugInfoRuleModel2.setPrice(2.00);
 			drugInfoRuleModel2.setBuyAmount(3.00);
-			drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片"));
+			drugInfoRuleModel2.setFirstCategory("西药");
+			drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片", "盐酸可乐定"));
 			drugInfoRuleModels.add(drugInfoRuleModel2);
 			orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
 			ResResult resResult = new ResResult();
@@ -50,15 +55,19 @@ public class RulesTest {
 			kieSession.fireAllRules(new AgendaFilter() {
 				@Override
 				public boolean accept(Match match) {
-					return match.getRule().getName().startsWith("ageLimit");
+					return match.getRule().getName().startsWith("westernMedicineMainIngredientDuplicate");
 				}
 			});
 			kieSession.dispose();
-			System.out.println(resResult.getRuleResultList().size());
+			assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() != 0.0);
+			assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() == 0.0);
 		}
-
+	/**
+	 * 西药主要成分重复	类别1为西药	"1.类别1为西药复方制剂    2.类别7（主要成分）与条件1中的药品有相同的成分"		禁忌	优先扣除处方中总价高的药品
+	 * 西药主要成分重复(西药 mainIngredient duplicate 西药复方制剂)"
+	 */
 	@Test
-	public void test02(){
+	public void westernMedicineMainIngredientDuplicate_02(){
 		OrderInfoRuleModel orderInfoRuleModel = new OrderInfoRuleModel();
 		PatientInfoRuleModel patientInfoRuleModel = new PatientInfoRuleModel();
 		patientInfoRuleModel.setAge(65);
@@ -68,37 +77,54 @@ public class RulesTest {
 		List<DrugInfoRuleModel> drugInfoRuleModels = Lists.newArrayList();
 		DrugInfoRuleModel drugInfoRuleModel1 = new DrugInfoRuleModel();
 		drugInfoRuleModel1.setDrugId(1L);
-		drugInfoRuleModel1.setCommonName("血脂康胶囊");
+		drugInfoRuleModel1.setCommonName("消渴丸");
 		drugInfoRuleModel1.setPrice(1.00);
 		drugInfoRuleModel1.setBuyAmount(3.0);
-		drugInfoRuleModel1.setMainIngredients(Lists.newArrayList("冰片"));
 		drugInfoRuleModel1.setFirstCategory("西药");
+		drugInfoRuleModel1.setMainIngredients(Lists.newArrayList("冰片"));
 		drugInfoRuleModels.add(drugInfoRuleModel1);
 		DrugInfoRuleModel drugInfoRuleModel2 = new DrugInfoRuleModel();
 		drugInfoRuleModel2.setDrugId(2L);
 		drugInfoRuleModel2.setCommonName("消渴丸");
-		drugInfoRuleModel2.setFirstCategory("西药");
-		drugInfoRuleModel2.setOtherCategory(Lists.newArrayList("他汀类"));
 		drugInfoRuleModel2.setPrice(2.00);
 		drugInfoRuleModel2.setBuyAmount(3.00);
-		drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片"));
+		drugInfoRuleModel2.setFirstCategory("西药复方制剂");
+		drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片", "盐酸可乐定"));
 		drugInfoRuleModels.add(drugInfoRuleModel2);
 		orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
 		ResResult resResult = new ResResult();
 		KieSession kieSession = KieServices.Factory.get().getKieClasspathContainer().newKieSession("HL");
 		kieSession.insert(orderInfoRuleModel);
 		kieSession.setGlobal("resResult", resResult);
+		DrugInfoRuleModel drugInfoRuleModel3 = new DrugInfoRuleModel();
+		drugInfoRuleModel3.setDrugId(3L);
+		drugInfoRuleModel3.setCommonName("消渴丸");
+		drugInfoRuleModel3.setPrice(2.00);
+		drugInfoRuleModel3.setBuyAmount(9.00);
+		drugInfoRuleModel3.setFirstCategory("西药复方制剂");
+		drugInfoRuleModel3.setMainIngredients(Lists.newArrayList("冰片", "盐酸可乐定"));
+		drugInfoRuleModels.add(drugInfoRuleModel3);
+		orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
+		kieSession.insert(orderInfoRuleModel);
+		kieSession.setGlobal("resResult", resResult);
 		kieSession.fireAllRules(new AgendaFilter() {
 			@Override
 			public boolean accept(Match match) {
-				return match.getRule().getName().startsWith("ChinesePatentWesternDuplicate");
+				return match.getRule().getName().startsWith("westernMedicineMainIngredientDuplicate");
 			}
 		});
 		kieSession.dispose();
-		System.out.println(resResult.getRuleResultList().size());
+		assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() != 0.0);
+		assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() == 0.0);
+		assert (orderInfoRuleModel.getDrugInfoList().get(2).getBuyAmount() == 0.0);
 	}
+
+	/**
+	 * 西药主要成分重复	类别1为西药复方制剂	"1.类别1为西药复方制剂    2.类别7（主要成分）与条件1中的药品有相同的成分"		禁忌	优先扣除处方中总价高的药品
+	 * 西药主要成分重复(西药复方制剂 mainIngredient duplicate 西药复方制剂)"
+	 */
 	@Test
-	public void test03(){
+	public void westernMedicineMainIngredientDuplicate_03(){
 		OrderInfoRuleModel orderInfoRuleModel = new OrderInfoRuleModel();
 		PatientInfoRuleModel patientInfoRuleModel = new PatientInfoRuleModel();
 		patientInfoRuleModel.setAge(65);
@@ -108,45 +134,45 @@ public class RulesTest {
 		List<DrugInfoRuleModel> drugInfoRuleModels = Lists.newArrayList();
 		DrugInfoRuleModel drugInfoRuleModel1 = new DrugInfoRuleModel();
 		drugInfoRuleModel1.setDrugId(1L);
-		drugInfoRuleModel1.setCommonName("金水宝胶囊");
+		drugInfoRuleModel1.setCommonName("消渴丸");
 		drugInfoRuleModel1.setPrice(1.00);
 		drugInfoRuleModel1.setBuyAmount(3.0);
+		drugInfoRuleModel1.setFirstCategory("西药复方制剂");
 		drugInfoRuleModel1.setMainIngredients(Lists.newArrayList("冰片"));
-		drugInfoRuleModel1.setFirstCategory("西药");
 		drugInfoRuleModels.add(drugInfoRuleModel1);
 		DrugInfoRuleModel drugInfoRuleModel2 = new DrugInfoRuleModel();
 		drugInfoRuleModel2.setDrugId(2L);
-		drugInfoRuleModel2.setCommonName("百令胶囊");
-		drugInfoRuleModel2.setFirstCategory("西药");
-		drugInfoRuleModel2.setOtherCategory(Lists.newArrayList("他汀类"));
+		drugInfoRuleModel2.setCommonName("消渴丸");
 		drugInfoRuleModel2.setPrice(2.00);
 		drugInfoRuleModel2.setBuyAmount(3.00);
-		drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片"));
+		drugInfoRuleModel2.setFirstCategory("西药复方制剂");
+		drugInfoRuleModel2.setMainIngredients(Lists.newArrayList("冰片", "盐酸可乐定"));
 		drugInfoRuleModels.add(drugInfoRuleModel2);
 		orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
 		ResResult resResult = new ResResult();
 		KieSession kieSession = KieServices.Factory.get().getKieClasspathContainer().newKieSession("HL");
 		kieSession.insert(orderInfoRuleModel);
 		kieSession.setGlobal("resResult", resResult);
+		DrugInfoRuleModel drugInfoRuleModel3 = new DrugInfoRuleModel();
+		drugInfoRuleModel3.setDrugId(3L);
+		drugInfoRuleModel3.setCommonName("消渴丸");
+		drugInfoRuleModel3.setPrice(2.00);
+		drugInfoRuleModel3.setBuyAmount(1.00);
+		drugInfoRuleModel3.setFirstCategory("西药复方制剂");
+		drugInfoRuleModel3.setMainIngredients(Lists.newArrayList("冰片", "盐酸可乐定"));
+		drugInfoRuleModels.add(drugInfoRuleModel3);
+		orderInfoRuleModel.setDrugInfoList(drugInfoRuleModels);
+		kieSession.insert(orderInfoRuleModel);
+		kieSession.setGlobal("resResult", resResult);
 		kieSession.fireAllRules(new AgendaFilter() {
 			@Override
 			public boolean accept(Match match) {
-				return match.getRule().getName().startsWith("ChinesePatentMedicineInGredientDuplicate");
+				return match.getRule().getName().startsWith("westernMedicineMainIngredientDuplicate");
 			}
 		});
 		kieSession.dispose();
-		System.out.println(resResult.getRuleResultList().size());
-	}
-
-	@Test
-	public void test(){
-		File  file = new File("d://aab");
-		if(file.exists()){
-			if(!file.isDirectory()){
-				System.out.println("aab的文件已经存在");
-			}
-		}else{
-			file.mkdir();
-		}
+		assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() == 0.0);
+		assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() == 0.0);
+		assert (orderInfoRuleModel.getDrugInfoList().get(2).getBuyAmount() != 0.0);
 	}
 }

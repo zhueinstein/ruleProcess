@@ -18,31 +18,16 @@ lock-on-active true
 rule "dupGenericName:订单中两个或以上药品通用名相同"
     when
         $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList)
-           $drugInfo: DrugInfoRuleModel($id:drugId, $theCommonName:commonName) from $drugInfoList
-           $dupList: ArrayList(size > 0) from collect( DrugInfoRuleModel(!omit && drugId != $id, commonName == $theCommonName) from $drugInfoList)
+        $drugInfo: DrugInfoRuleModel($id:drugId, $theCommonName:commonName) from $drugInfoList
+        $dupList: ArrayList(size > 0) from collect( DrugInfoRuleModel(!omit && drugId != $id, commonName == $theCommonName) from $drugInfoList)
 
     then
-            String dupDrugs = "";
             $dupList.add($drugInfo);
-            Collections.sort($dupList, new Comparator<DrugInfoRuleModel>(){
-               public int compare(DrugInfoRuleModel arg0, DrugInfoRuleModel arg1) {
-                   Double d0 = arg0.getBuyAmount() * arg0.getPrice();
-                   Double d1 = arg1.getBuyAmount() * arg1.getPrice();
-                              return d0.compareTo(d1);
-                          }
-            });
-            int eleNumber = 0;
-           for(int ins = 0; ins < $dupList.size(); ins++){
-               if(!((DrugInfoRuleModel)$dupList.get(ins)).isOmit()){
-                   eleNumber = ins;
-                   break;
-               }
-           }
-            for(int index = (1 + eleNumber); index < $dupList.size(); index++){
+            $dupList = OrderInfoRuleModel.removeZero($dupList);
+            for(int index = 1; index < $dupList.size(); index++){
                DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
                RuleResult ruleResult = new RuleResult();
                ruleResult.setRuleCheckObjectType(2);
-               ruleResult.setMessage("同通用名：此药品与" + dupDrugs + "通用名相同，用药重复");
                ruleResult.setRuleMark("dupGenericName");
                ruleResult.setRuleNo("同通用名");
                ruleResult.setDrugId(model.getDrugId());
