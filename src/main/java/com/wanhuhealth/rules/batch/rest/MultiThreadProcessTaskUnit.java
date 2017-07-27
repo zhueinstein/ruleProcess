@@ -45,13 +45,22 @@ public class MultiThreadProcessTaskUnit {
     static FileWriter fw = null;
     static FileWriter modelFw = null;
     static KieContainer kieContainer;
-
+    static String direction = "d://aab"; // window
+//    static String direction = "d://aab"; // mac
     static{
         try {
+            File  fileD = new File(direction);
+            if(fileD.exists()){
+                if(!fileD.isDirectory()){
+                    System.out.println("aab的文件已经存在");
+                }
+            }else{
+                fileD.mkdir();
+            }
             String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
-            File file = new File(String.format("D://drools_data//DroolsResult_%s.txt", tail));
+            File file = new File(String.format(direction + "//DroolsResult_%s.txt", tail));
             fw = new FileWriter(file, true);
-            File modelFile = new File(String.format("D://drools_data//DroolsModels_%s.txt", tail));
+            File modelFile = new File(String.format(direction + "//DroolsModels_%s.txt", tail));
             modelFw = new FileWriter(modelFile, true);
             KieServices kieService = KieServices.Factory.get();
             kieContainer = kieService.getKieClasspathContainer();
@@ -59,14 +68,14 @@ public class MultiThreadProcessTaskUnit {
             System.out.println(ex);
         }
     }
-//    @PostConstruct
+
     public void batchRun(String start, String end) throws Exception {
         String threadName = Thread.currentThread().getName();
         Double count = 0.0;
         try {
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data ……"));
-            List<OrderInfo>  orderInfos = orderInfoMapper.findBetween2Date(start, end);
-            List<OrderInfo> orderInfoList = mergeOrderInfo(orderInfos);
+
+            List<OrderInfo> orderInfoList = mergeOrderInfo(orderInfoMapper.findBetween2Date(start, end));
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data complete!"));
             Integer totalTaskCount = orderInfoList.size();
             KieSession kieSession;
@@ -92,13 +101,12 @@ public class MultiThreadProcessTaskUnit {
                 if(resResult.getRuleResultList().size() != 0) {
                     System.err.println(resResult.getRuleResultList().size());
                 }
-//                System.err.println(String.format("线程: %s processing is %s%s", threadName, (count/totalTaskCount)* 100, "%"));
+                System.err.println(String.format("线程: %s processing is %s%s", threadName, (count/totalTaskCount)* 100, "%"));
             }
 
         }catch (Exception e){
             logger.error(e);
         }finally {
-//            new MultiThreadProcessMain().watching();
         }
     }
 

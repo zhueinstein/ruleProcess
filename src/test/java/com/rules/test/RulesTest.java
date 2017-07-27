@@ -11,6 +11,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -135,5 +136,17 @@ public class RulesTest {
 		});
 		kieSession.dispose();
 		System.out.println(resResult.getRuleResultList().size());
+	}
+
+	@Test
+	public void test(){
+		File  file = new File("d://aab");
+		if(file.exists()){
+			if(!file.isDirectory()){
+				System.out.println("aab的文件已经存在");
+			}
+		}else{
+			file.mkdir();
+		}
 	}
 }

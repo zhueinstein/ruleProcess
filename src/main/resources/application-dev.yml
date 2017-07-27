@@ -33,14 +33,5 @@ logging:
     level:
        com.Learning:DEBUG
     file: D:/apache-tomcat-8.0.35/logs/learning.log
-#Leaning
-learning:
-    friend: 朱薇枫
-    configurationBean:
-        port: 8001
-        serverName: 安徽影视歌曲大赛
-        topic: 公平公正的唱歌比赛，由中国铁道部前头举办
-hello:
-    msg: 黑夜给了我黑色的眼睛，我却用它来寻找光明
 
 
