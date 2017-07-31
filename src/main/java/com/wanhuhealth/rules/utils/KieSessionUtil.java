@@ -5,7 +5,6 @@ import com.wanhuhealth.rules.redis.service.RedisServiceImpl;
 import org.apache.log4j.Logger;
 import org.kie.api.event.rule.*;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -39,7 +38,7 @@ public class KieSessionUtil {
 	 */
 	public static KieSession getKieSession(String sessionName) {
 		if(session == null) {
-			session = KownlegeSessionHelper.getStatefulKownlegeSession(sessionName);
+			session = KnowledgeSessionHelper.getStatefulKnowledgeSession(sessionName);
 			addLogger(session);
 		}
 		return session;
