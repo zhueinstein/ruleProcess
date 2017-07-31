@@ -263,7 +263,7 @@ public class Json2ExcelMain {
                     case 22:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         if(StringUtils.isNotBlank(vo.getOrderAuditTotal())) {
-                            cell.setCellValue(df.format(ht.get(vo.getOrderNO() + "A")));
+                            cell.setCellValue(ht.get(vo.getOrderNO() + "A"));
                         }
                         break;
                     case 23:
