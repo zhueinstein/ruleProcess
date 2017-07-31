@@ -224,7 +224,7 @@ public class Json2ExcelMain {
                         break;
                     case 13:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        cell.setCellValue(df.format(Double.valueOf(vo.getUseAmount())));
+                        cell.setCellValue(Double.valueOf(vo.getUseAmount()));
                         break;
                     case 14:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
@@ -232,7 +232,7 @@ public class Json2ExcelMain {
                         break;
                     case 15:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        cell.setCellValue(df.format(Double.valueOf(vo.getPrice())));
+                        cell.setCellValue(Double.valueOf(vo.getPrice()));
                         break;
                     case 16:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
@@ -240,12 +240,12 @@ public class Json2ExcelMain {
                         break;
                     case 17:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        cell.setCellValue(df.format(Double.valueOf(vo.getTotal())));
+                        cell.setCellValue(Double.valueOf(vo.getTotal()));
                         break;
                     case 18:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         if(StringUtils.isNotBlank(vo.getOrderTotal())) {
-                            cell.setCellValue(df.format(ht.get(vo.getOrderNO())));
+                            cell.setCellValue(ht.get(vo.getOrderNO()));
                         }
                         break;
                     case 19:
@@ -258,7 +258,7 @@ public class Json2ExcelMain {
                         break;
                     case 21:
                         cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        cell.setCellValue(df.format(Double.valueOf(vo.getAuditTotal())));
+                        cell.setCellValue(Double.valueOf(vo.getAuditTotal()));
                         break;
                     case 22:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);

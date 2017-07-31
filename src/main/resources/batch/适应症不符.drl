@@ -17,8 +17,9 @@ lock-on-active true
 rule "diseaseNotMatch:适应症不符-处方中每个药品，其适应症与处方的＂疾病类型＂不匹配"
 when
     $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList, $orderDisease: diseaseInfoList, diseaseInfoList.size > 0)
-    $drugInfo: (DrugInfoRuleModel(indicationList.size > 0, Collections.disjoint($orderDisease, indicationList) == true) from $drugInfoList)
+    $drugInfo: (DrugInfoRuleModel(!omit, indicationList.size > 0, Collections.disjoint($orderDisease, indicationList) == true) from $drugInfoList)
 then
+
     RuleResult ruleResult = new RuleResult();
     ruleResult.setRuleCheckObjectType(2);
     ruleResult.setMessage("适应症不符：药品适应症与当前疾病不匹配");
