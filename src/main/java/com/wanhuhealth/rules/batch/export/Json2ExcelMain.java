@@ -79,10 +79,14 @@ public class Json2ExcelMain {
                         if(!s.endsWith("}")){
                             s = s + "}";
                         }
-                        list.add(JSON.parseObject(s, OutFormatMessage.class));
+                        if (!JSON.parseObject(s, OutFormatMessage.class).getPatientName().startsWith("X2")) {
+                            list.add(JSON.parseObject(s, OutFormatMessage.class));
+                        }
                     }
                 }else {
-                    list.add(JSON.parseObject(content, OutFormatMessage.class));
+                    if (!JSON.parseObject(content, OutFormatMessage.class).getPatientName().startsWith("X2")) {
+                        list.add(JSON.parseObject(content, OutFormatMessage.class));
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
