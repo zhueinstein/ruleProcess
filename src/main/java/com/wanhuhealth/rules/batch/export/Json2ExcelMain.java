@@ -23,12 +23,12 @@ public class Json2ExcelMain {
     private static DecimalFormat df   = new DecimalFormat("######0.00");
     private static Hashtable<String, Double> ht = new Hashtable<String, Double>();
 
-//    static String data_direction = "D:\\drools_data//"; // window
-    static String data_direction = "/Users/zcx/drools_data/"; // mac
+    static String data_direction = "D:\\drools_data//"; // window
+//    static String data_direction = "/Users/zcx/drools_data/"; // mac
     static String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         export(readList());
-    }
+    }*/
     private static String outFileName = String.format("%sRuleResult_%s.xlsx",data_direction, tail);
     private static String loadFileName = String.format("%sDroolsResult_", data_direction);
     static {
@@ -55,7 +55,7 @@ public class Json2ExcelMain {
         }
 
     }
-    private static List<OutFormatMessage> readList(){
+    public static List<OutFormatMessage> readList(){
         List<OutFormatMessage> list = Lists.newArrayList();
         FileInputStream fis = null;
         InputStreamReader isr = null;
@@ -151,7 +151,7 @@ public class Json2ExcelMain {
         }
 //        return ht;
     }
-    private static void export(List<OutFormatMessage> list){
+    public static void export(List<OutFormatMessage> list){
         final CountClick click = new CountClick();
         click.setTotal(list.size() * 24.0);
 

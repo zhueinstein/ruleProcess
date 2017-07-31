@@ -1,7 +1,6 @@
 package com.wanhuhealth.rules.batch.rest;
 
 import com.alibaba.fastjson.JSON;
-
 import com.google.common.collect.Lists;
 import com.wanhuhealth.rules.batch.drools.*;
 import com.wanhuhealth.rules.batch.export.OutFormatMessage;
@@ -21,18 +20,20 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by admin on 2017/7/17.
  */
 @Component
-public class MultiThreadProcessTaskUnit {
-    private static Logger logger = Logger.getLogger(MultiThreadProcessTaskUnit.class);
+public class DroolsProcessTaskUnit {
+    private static Logger logger = Logger.getLogger(DroolsProcessTaskUnit.class);
 
     @Autowired
     OrderInfoMapper orderInfoMapper;
@@ -40,14 +41,16 @@ public class MultiThreadProcessTaskUnit {
     DiseaseInfoMapper diseaseInfoMapper;
     @Autowired
     DrugInformationMapper drugInformationMapper;
+    @Autowired
+    ComputeSalience computeSalience;
     DecimalFormat df   = new DecimalFormat("######0.00");
     final String sessionName = "wanHu";
     final String hlSessionName = "HL";
     static FileWriter fw = null;
     static FileWriter modelFw = null;
     static KieContainer kieContainer;
-//    static String direction = "d://drools_data//"; // window
-    static String direction = "/Users/zcx/drools_data/"; // mac
+    static String direction = "d://drools_data//"; // window
+//    static String direction = "/Users/zcx/drools_data/"; // mac
     static{
         try {
             File  fileD = new File(direction);
@@ -81,6 +84,7 @@ public class MultiThreadProcessTaskUnit {
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data complete!"));
             click.setTotal(orderInfoList.size()* 1.0);
             KieSession kieSession;
+
             for (OrderInfo orderInfo : orderInfoList) {
                 click.setCount(click.getCount() + 1);
                 OrderInfoRuleModel orderInfoRuleModel = buildOrderInfoRuleModel(orderInfo);
@@ -88,12 +92,13 @@ public class MultiThreadProcessTaskUnit {
                 modelFw.write("\n");
                 modelFw.flush();
                 ResResult resResult = new ResResult();
-                kieSession = kieContainer.newKieSession(sessionName);
+                kieSession = kieContainer.newKieSession(hlSessionName);
                 kieSession.setGlobal("resResult", resResult);
+                kieSession.setGlobal("computeSalience", computeSalience);
                 kieSession.insert(orderInfoRuleModel);
                 kieSession.fireAllRules();
                 kieSession.dispose();
-                kieSession = kieContainer.newKieSession(hlSessionName);
+                kieSession = kieContainer.newKieSession(sessionName);
                 kieSession.setGlobal("resResult", resResult);
                 kieSession.insert(orderInfoRuleModel);
                 kieSession.fireAllRules();

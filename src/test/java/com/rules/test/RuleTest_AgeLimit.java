@@ -17,8 +17,7 @@ import java.util.List;
  * Created by admin on 2017/6/2.
  */
 public class RuleTest_AgeLimit {
-
-		@Test
+	@Test
 		public void ageLimit(){
 			OrderInfoRuleModel orderInfoRuleModel = new OrderInfoRuleModel();
 			PatientInfoRuleModel patientInfoRuleModel = new PatientInfoRuleModel();

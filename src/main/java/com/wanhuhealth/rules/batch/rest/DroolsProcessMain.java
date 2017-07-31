@@ -1,13 +1,11 @@
 package com.wanhuhealth.rules.batch.rest;
 
 
+import com.wanhuhealth.rules.batch.export.Json2ExcelMain;
 import com.wanhuhealth.rules.utils.RuleTaskThread;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 
@@ -15,13 +13,12 @@ import javax.annotation.PostConstruct;
  * Created by admin on 2017/7/17.
  */
 @Component
-public class MultiThreadProcessMain {
+public class DroolsProcessMain {
     @Autowired
     ThreadPoolTaskExecutor threadPoolExecutor;
     @Autowired
-    MultiThreadProcessTaskUnit batchRunTask;
+    DroolsProcessTaskUnit batchRunTask;
     @PostConstruct
-//    @Async
     public void batchRunTask() throws Exception {
         Long begin = System.currentTimeMillis();
         threadPoolExecutor.execute(new RuleTaskThread("2015-11-01", "2015-12-01", batchRunTask));
@@ -45,13 +42,15 @@ public class MultiThreadProcessMain {
         threadPoolExecutor.execute(new RuleTaskThread("2017-05-01", "2017-06-01", batchRunTask));
         threadPoolExecutor.execute(new RuleTaskThread("2017-06-01", "2017-07-01", batchRunTask));
         threadPoolExecutor.execute(new RuleTaskThread("2017-07-01", "2017-08-01", batchRunTask));
-//        threadPoolExecutor.execute(new RuleTaskThread("2016-01-26", "2016-01-27", batchRunTask));
+//        threadPoolExecutor.execute(new RuleTaskThread("2016-03-07", "2016-03-08", batchRunTask));
         while(true){
             if(threadPoolExecutor.getActiveCount() == 0){
-                MultiThreadProcessTaskUnit.fw.close();
-                MultiThreadProcessTaskUnit.modelFw.close();
+                DroolsProcessTaskUnit.fw.close();
+                DroolsProcessTaskUnit.modelFw.close();
                 Long end = System.currentTimeMillis();
                 System.out.println(String.format("Multi thread is processed! It costs %s%s", batchRunTask.df.format(Double.valueOf(end - begin) / (1000 * 60)), "minutes"));
+                System.out.println("xml文件转换成xlsx文件开始：");
+                Json2ExcelMain.export(Json2ExcelMain.readList());
                 break;
             }else {
                 Thread.sleep(5000);

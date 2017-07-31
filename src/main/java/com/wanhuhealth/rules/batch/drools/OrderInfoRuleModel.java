@@ -40,7 +40,7 @@ public class OrderInfoRuleModel extends ResResult{
 	private List<String> hisDiseases = Lists.newArrayList(); // 历史疾病
 	private PatientInfoRuleModel patientInfoRuleModel; // 当前病人信息
 	private String ruleMark;
-
+	public static Integer aa = 00;
 	public Integer getSysCategory() {
 		return sysCategory;
 	}

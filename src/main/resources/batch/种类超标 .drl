@@ -11,7 +11,7 @@ import java.util.Collections
 import java.util.Comparator
 
 global ResResult resResult;
-salience 95
+salience 97
 lock-on-active true
 rule "drugTypeExceed:种类超标-处方中药品种类超过7种"
 when

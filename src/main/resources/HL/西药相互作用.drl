@@ -4,12 +4,14 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 import java.util.ArrayList
 global ResResult resResult;
+global ComputeSalience computeSalience;
 
 // 西药相互作用	商品名为利福平	类别７（主要成分）中含有硝苯地平		禁忌	优先扣除处方中总价高的药品
 rule "westernMedicineInteraction:西药相互作用(利福平 drug with 硝苯地平)"
-salience 5000
+salience computeSalience.westernMedicineInteraction
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
@@ -24,7 +26,7 @@ then
         ruleResult.setRuleCheckObjectType(1);
         ruleResult.setMessage("westernMedicineInteraction:西药相互作用(利福平 drug with 硝苯地平)");
         ruleResult.setRuleMark("westernMedicineInteraction");
-        ruleResult.setRuleNo("西药相互作用(利福平 drug with 硝苯地平)");
+        ruleResult.setRuleNo("西药相互作用");
         ruleResult.setDrugId(model.getDrugId());
          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -39,7 +41,7 @@ then
 
  //西药相互作用	类别７（主要成分）中含有硫酸氯吡格雷	类别７（主要成分）中含有奥美拉唑		禁忌	优先扣除处方中总价高的药品
  rule "westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)"
- salience 5000
+ salience computeSalience.westernMedicineInteraction
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
@@ -54,7 +56,7 @@ then
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)");
+         ruleResult.setRuleNo("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -69,7 +71,7 @@ then
 
 // 西药相互作用	类别７（主要成分）中含有硫酸氯吡格雷	类别７（主要成分）中含有埃索拉唑		禁忌	优先扣除处方中总价高的药品
   rule "westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)"
-   salience 5000
+   salience computeSalience.westernMedicineInteraction
    lock-on-active true
    when
        $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
@@ -84,7 +86,7 @@ then
            ruleResult.setRuleCheckObjectType(1);
            ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)");
            ruleResult.setRuleMark("westernMedicineInteraction");
-           ruleResult.setRuleNo("西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)");
+           ruleResult.setRuleNo("西药相互作用");
            ruleResult.setDrugId(model.getDrugId());
             for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                          if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -98,7 +100,7 @@ then
     end
  //西药相互作用	诊断中含有“不完全房室传导阻滞”或“病窦综合征”或“病态窦房结综合征”	类别７（主要成分）中含有苯磺酸氨氯地平	类别７（主要成分）中含有胺碘酮	禁忌	优先扣除处方中总价高的药品
  rule "westernMedicineInteraction:西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)"
- salience 5000
+ salience computeSalience.westernMedicineInteraction
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList, (diseaseInfoList contains "不完全房室传导阻滞" || diseaseInfoList contains "病窦综合征" || diseaseInfoList contains "病态窦房结综合征"))
@@ -113,7 +115,7 @@ then
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)");
+         ruleResult.setRuleNo("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -128,7 +130,7 @@ then
 
   // 西药相互作用	类别７（主要成分）中含有阿法骨化醇	类别７（主要成分）中含有碳酸钙D3		禁忌	优先扣除处方中总价高的药品
 rule "westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with 碳酸钙D3)"
- salience 5000
+ salience computeSalience.westernMedicineInteraction
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
@@ -143,7 +145,7 @@ rule "westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with �
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with 碳酸钙D3)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用(阿法骨化醇 drug with 碳酸钙D3)");
+         ruleResult.setRuleNo("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

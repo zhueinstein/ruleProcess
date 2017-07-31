@@ -34,7 +34,7 @@
     </resultMap>
     <select id="drugInformationList" parameterType="java.lang.String" resultMap="DrugInformationEntity">
     SELECT  bdi.id AS baseDrugId, di.id as drugId, dd.`price`, dd.`amount`, dd.`use_amount` AS useAmount, dd.`frequency`,
-	mi.`common_name` AS commonName, sd1.`label` AS largeClass, sd2.`label` AS mediumClass, sd3.`label` AS smallClass, sd3.`label` AS pharmacologyClass,
+	mi.`common_name` AS commonName, sd1.`label` AS largeClass, sd2.`label` AS mediumClass, sd3.`label` AS smallClass, sd4.`label` AS pharmacologyClass,
 	bdi.preparation_unit AS preparationUnit, sd5.`label` AS packageUnit, sd6.`label` AS minimumUnit,
 	bdi.`product_code` AS productCode, bdi.`product_name` AS productName,bdi.`package_size` AS packageSize, bdi.`maximum_dose_in_unit` AS maximumDose,
 	 bdi.`maximum_dose_daily_in_unit` AS maximumDoseDaily, bdi.`use_amount`AS recommendUseAmount, bdi.`frequency` AS recommendFrequency,
@@ -48,10 +48,12 @@
 	LEFT JOIN sys_dict sd1 ON mi.`large_class` = sd1.`id`
 	LEFT JOIN sys_dict sd2 ON mi.`medium_class` = sd2.`id`
 	LEFT JOIN sys_dict sd3 ON mi.`small_class` = sd3.`id`
+	LEFT JOIN sys_dict sd4 ON mi.`pharmacology_class` = sd4.`id`
 	LEFT JOIN sys_dict sd5 ON bdi.`package_unit` = sd5.`id`
 	LEFT JOIN sys_dict sd6 ON bdi.`minimum_unit` = sd6.`id`
 
             where dd.`order_id` = #{orderId, jdbcType=VARCHAR}
+            AND dd.del_flag = '0'
     </select>
     <select id="findAll" parameterType="java.lang.String" resultType="com.wanhuhealth.rules.batch.model.DrugInformation">
     select dd.`price`, dd.`amount`, dd.`amount`, dd.`frequency`,

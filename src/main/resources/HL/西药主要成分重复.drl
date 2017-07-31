@@ -4,17 +4,19 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 global ResResult resResult;
+global ComputeSalience computeSalience;
 
 // 西药主要成分重复	类别1为西药的药品	"1.类别1为西药的药品   2.类别7（主要成分）与条件1的药品相同"		禁忌	优先扣除处方中总价高的药品
 
 
 rule "westernMedicineMainIngredientDuplicate:西药主要成分重复(西药 mainIngredient duplicate 西药)"
-salience 4995
+salience computeSalience.westernMedicineMainIngredientDuplicate
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
@@ -28,7 +30,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicineMainIngredientDuplicate");
-       ruleResult.setRuleNo("西药主要成分重复(mainIngredient duplicate)");
+       ruleResult.setRuleNo("西药主要成分重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -44,7 +46,7 @@ then
  // 西药主要成分重复	类别1为西药	"1.类别1为西药复方制剂    2.类别7（主要成分）与条件1中的药品有相同的成分"		禁忌	优先扣除处方中总价高的药品
 
 rule "westernMedicineMainIngredientDuplicate:西药主要成分重复(西药 mainIngredient duplicate 西药复方制剂)"
-salience 4995
+salience computeSalience.westernMedicineMainIngredientDuplicate
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
@@ -58,7 +60,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicineMainIngredientDuplicate");
-       ruleResult.setRuleNo("西药主要成分重复(mainIngredient duplicate)");
+       ruleResult.setRuleNo("西药主要成分重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -73,7 +75,7 @@ then
  end
  // 西药主要成分重复	类别1为西药复方制剂	"1.类别1为西药复方制剂    2.类别7（主要成分）与条件1中的药品有相同的成分"		禁忌	优先扣除处方中总价高的药品
 rule "westernMedicineMainIngredientDuplicate:西药主要成分重复(西药复方制剂 mainIngredient duplicate 西药复方制剂)"
-salience 4995
+salience computeSalience.westernMedicineMainIngredientDuplicate
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
@@ -87,7 +89,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicineMainIngredientDuplicate");
-       ruleResult.setRuleNo("西药主要成分重复(mainIngredient duplicate)");
+       ruleResult.setRuleNo("西药主要成分重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

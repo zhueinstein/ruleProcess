@@ -4,16 +4,18 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 import com.wanhuhealth.rules.batch.drools.RulesCheckTypeEnum
 global ResResult resResult;
+global ComputeSalience computeSalience;
 
 //合并症用药不合理	诊断中含有高血压+糖尿病+哮喘	 类别5中 β受体阻滞剂的药品		禁忌	扣除此药品
 
 rule "mergeSymptom:合并症用药不合理(高血压+糖尿病+哮喘 drug with β受体阻滞剂)"
-salience 4998
+salience computeSalience.mergeSymptom
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "糖尿病" && diseaseInfoList contains "哮喘", $drugInfoList: drugInfoList)
@@ -23,7 +25,7 @@ then
     ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
     ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+糖尿病+哮喘 drug with β受体阻滞剂");
     ruleResult.setRuleMark("mergeSymptom");
-    ruleResult.setRuleNo("合并症用药不合理(高血压+糖尿病+哮喘 drug with β受体阻滞剂)");
+    ruleResult.setRuleNo("合并症用药不合理");
     ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
     $drugInfo.setOmit(true);
@@ -34,7 +36,7 @@ then
 
  //合并症用药不合理	诊断中含有高血压+痛风发作期	类别６为排钾利尿剂		禁忌	扣除此药品
  rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 排钾利尿剂)"
- salience 4997
+ salience computeSalience.mergeSymptom
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "痛风发作期" , $drugInfoList: drugInfoList)
@@ -46,7 +48,7 @@ then
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 排钾利尿剂)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理(高血压+痛风发作期 drug with 排钾利尿剂)");
+     ruleResult.setRuleNo("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
       $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -57,7 +59,7 @@ then
 
 //合并症用药不合理	诊断中含有高血压+痛风发作期	 "1.类别１为西药复方制剂；  2.类别７（主要成分）中含有氨苯蝶啶。"		禁忌	扣除此药品
 rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氨苯蝶啶)"
- salience 4997
+ salience computeSalience.mergeSymptom
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "痛风发作期" , $drugInfoList: drugInfoList)
@@ -69,7 +71,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氨苯蝶啶)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理(高血压+痛风发作期 drug with 氨苯蝶啶)");
+     ruleResult.setRuleNo("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
      $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -79,7 +81,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
   end
 //合并症用药不合理	诊断中含有高血压+痛风发作期	"1.类别１为西药复方制剂；  2.类别７（主要成分）中含有氢氯噻嗪。"		禁忌	扣除此药品
 rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氢氯噻嗪)"
- salience 4997
+ salience computeSalience.mergeSymptom
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "痛风发作期" , $drugInfoList: drugInfoList)
@@ -91,7 +93,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氢氯噻嗪)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理(高血压+痛风发作期 drug with 氢氯噻嗪)");
+     ruleResult.setRuleNo("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
       $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -102,7 +104,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
 
 // 合并症用药不合理	诊断中含有高血压+高尿酸血症	类别６为排钾利尿剂的药品		禁忌	扣除此药品
 rule "mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 排钾利尿剂)"
-salience 4996
+salience computeSalience.mergeSymptom
 lock-on-active true
 when
    $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "高尿酸血症" , $drugInfoList: drugInfoList)
@@ -112,7 +114,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 排钾利尿剂)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理(高血压+高尿酸血症 drug with 排钾利尿剂)");
+   ruleResult.setRuleNo("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);
@@ -123,7 +125,7 @@ end
 
 // 合并症用药不合理	诊断中含有高血压+高尿酸血症	"1.类别１为西药复方制剂；   2.类别７（主要成分）中含有氨苯蝶啶。"		禁忌	扣除此药品
 rule "mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氨苯蝶啶)"
-salience 4996
+salience computeSalience.mergeSymptom
 lock-on-active true
 when
    $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "高尿酸血症" , $drugInfoList: drugInfoList)
@@ -135,7 +137,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氨苯蝶啶)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理(高血压+高尿酸血症 drug with 氨苯蝶啶)");
+   ruleResult.setRuleNo("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);
@@ -146,7 +148,7 @@ end
 
 // 合并症用药不合理	诊断中含有高血压+高尿酸血症	"1.类别１为西药复方制剂；   2.类别７（主要成分）中含有氢氯噻嗪。"		禁忌	扣除此药品
 rule "mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氢氯噻嗪)"
-salience 4996
+salience computeSalience.mergeSymptom
 lock-on-active true
 when
    $orderInfo:OrderInfoRuleModel(diseaseInfoList contains "高血压" && diseaseInfoList contains "高尿酸血症" , $drugInfoList: drugInfoList)
@@ -158,7 +160,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氢氯噻嗪)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理(高血压+高尿酸血症 drug with 氢氯噻嗪)");
+   ruleResult.setRuleNo("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);

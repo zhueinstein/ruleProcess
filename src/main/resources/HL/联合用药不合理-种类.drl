@@ -4,16 +4,17 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 
 global ResResult resResult;
-
+global ComputeSalience computeSalience;
 //联合用药不合理-种类	处方中适应症为高血压的药品	西药类别3降血压药单方＞3种		禁忌	优先扣除处方中处方中总价高药品，最终保留3种。
 
 rule "mergeDrug:联合用药不合理-种类(适应症为高血压的药品)"
-salience 4999
+salience computeSalience.mergeDrug
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
@@ -28,7 +29,7 @@ then
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setMessage("mergeDrug:联合用药不合理-种类(适应症为高血压的药品)");
         ruleResult.setRuleMark("mergeDrug");
-        ruleResult.setRuleNo("联合用药不合理-种类(适应症为高血压的药品)");
+        ruleResult.setRuleNo("联合用药不合理-种类");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                 if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

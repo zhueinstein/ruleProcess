@@ -4,16 +4,18 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
 global ResResult resResult;
+global ComputeSalience computeSalience;
 
 //中成药与西药成分重复	商品名为血脂康胶囊	"1.类别1为西药或西药复方制剂；  2.类别4为他汀类."				禁忌	去掉血脂康胶囊
 
 rule "ChinesePatentWesternDuplicate:中成药与西药成分重复(血脂康胶囊  drug with 他汀类)"
-salience 4990
+salience computeSalience.ChinesePatentWesternDuplicate
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
@@ -24,7 +26,7 @@ then
     RuleResult ruleResult = new RuleResult();
     ruleResult.setRuleCheckObjectType(2);
     ruleResult.setRuleMark("ChinesePatentWesternDuplicate");
-    ruleResult.setRuleNo("中成药与西药成分重复(血脂康胶囊  drug with 他汀类)");
+    ruleResult.setRuleNo("中成药与西药成分重复");
     ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.00);
     $drugInfo.setOmit(true);

@@ -4,12 +4,14 @@ import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
 import com.wanhuhealth.rules.batch.drools.ResResult
 import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.ComputeSalience
 import java.util.ArrayList
 global ResResult resResult;
+global ComputeSalience computeSalience;
 
 // 中成药毒副作用累加	商品名为脑安胶囊	商品名为复方丹参滴丸		禁忌	优先扣除处方中总价高的药品
 rule "ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)"
-salience 5000
+salience computeSalience.ChinesePatentMedicineToxicity
 lock-on-active true
 when
     $orderInfo:OrderInfoRuleModel($drugInfoList:drugInfoList)
@@ -23,7 +25,7 @@ then
         ruleResult.setRuleCheckObjectType(1);
         ruleResult.setMessage("ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)");
         ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
-        ruleResult.setRuleNo("中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)");
+        ruleResult.setRuleNo("中成药毒副作用累加");
         ruleResult.setDrugId(model.getDrugId());
          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -38,7 +40,7 @@ then
 
  // 中成药毒副作用累加	商品名为脑安胶囊	商品名为复方丹参片		禁忌	优先扣除处方中总价高的药品
  rule "ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参片)"
- salience 5000
+ salience computeSalience.ChinesePatentMedicineToxicity
  lock-on-active true
  when
      $orderInfo:OrderInfoRuleModel($drugInfoList:drugInfoList)
@@ -51,7 +53,7 @@ then
          RuleResult ruleResult = new RuleResult();
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
-         ruleResult.setRuleNo("中成药毒副作用累加(脑安胶囊 with 复方丹参片)");
+         ruleResult.setRuleNo("中成药毒副作用累加");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

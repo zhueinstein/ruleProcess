@@ -12,7 +12,7 @@ import java.lang.Math;
 
 global ResResult resResult;
 
-salience 98
+salience 95
 lock-on-active true
 rule "buyAmtOutLimit:药品超限-单个药品，购买数量超过最大限量"
    when
