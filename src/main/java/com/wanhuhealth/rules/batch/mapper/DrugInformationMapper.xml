@@ -7,7 +7,6 @@
         <result column="price" jdbcType="DOUBLE" property="price" />
         <result column="amount" jdbcType="DOUBLE" property="amount" />
         <result column="useAmount" jdbcType="DOUBLE" property="useAmount" />
-        <result column="amount" jdbcType="DOUBLE" property="useAmount" />
         <result column="frequency" jdbcType="VARCHAR" property="frequency" />
         <result column="commonName" jdbcType="VARCHAR" property="commonName" />
         <result column="largeClass" jdbcType="VARCHAR" property="largeClass" />

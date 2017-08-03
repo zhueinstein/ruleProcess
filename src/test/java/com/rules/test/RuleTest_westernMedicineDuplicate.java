@@ -318,9 +318,9 @@ public class RuleTest_westernMedicineDuplicate {
         });
         kieSession.dispose();
         assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(0).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(0).getMarkName().contains("慎用"));
         assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(1).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(1).getMarkName().contains("慎用"));
     }
 
     /**
@@ -366,9 +366,9 @@ public class RuleTest_westernMedicineDuplicate {
         });
         kieSession.dispose();
         assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(0).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(0).getMarkName().contains("慎用"));
         assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(1).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(1).getMarkName().contains("慎用"));
     }
     /**
      * 西药药理作用重复	类别1为西药的药品	"1.类别1为西药的药品；   2.类别6与条件1药品类别6相同；   3.类别6为排钾利尿剂。"	诊断中含有“心功能不全”或“心力衰竭”或“心衰”或“慢性肾功能不全”或“尿毒症”或“慢性肾衰”	慎用	提示
@@ -413,9 +413,9 @@ public class RuleTest_westernMedicineDuplicate {
         });
         kieSession.dispose();
         assert (orderInfoRuleModel.getDrugInfoList().get(0).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(0).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(0).getMarkName().contains("慎用"));
         assert (orderInfoRuleModel.getDrugInfoList().get(1).getBuyAmount() != 0.0);
-        assert (resResult.getRuleResultList().get(1).getRuleNo().contains("慎用"));
+        assert (resResult.getRuleResultList().get(1).getMarkName().contains("慎用"));
     }
 
 }

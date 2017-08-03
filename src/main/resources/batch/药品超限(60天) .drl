@@ -26,11 +26,15 @@ rule "buyAmtOutLimit:药品超限-单个药品，购买数量超过最大限量"
            ruleResult.setRuleCheckObjectType(1);
 
            int min = (int)Math.ceil(Math.min($drugInfo.getMaximumDoseDaily() * 60, $drugInfo.getUseAmountDaily() * 60)/$drugInfo.getPackageSize());
-           ruleResult.setRuleMark("buyAmtOutLimit");
-           ruleResult.setRuleNo("药品超限(60天)");
-           ruleResult.setDrugId($drugInfo.getDrugId());
-           $drugInfo.setBuyAmount(Double.valueOf(min));
-           resResult.getRuleResultList().add(ruleResult);
+           if(min < $drugInfo.getBuyAmount()){
+               ruleResult.setRuleMark("buyAmtOutLimit");
+               ruleResult.setMarkName("药品超限(60天)");
+               ruleResult.setDrugId($drugInfo.getDrugId());
+               ruleResult.setSaveCount($drugInfo.getBuyAmount() - min);
+               $drugInfo.setBuyAmount(Double.valueOf(min));
+               resResult.getRuleResultList().add(ruleResult);
+           }
+
        }
        update($orderInfo)
 

@@ -1,9 +1,9 @@
-package com.wanhuhealth.rules.batch.rest;
+package com.wanhuhealth.rules.batch.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.wanhuhealth.rules.batch.drools.*;
-import com.wanhuhealth.rules.batch.export.OutFormatMessage;
+import com.wanhuhealth.rules.batch.excel.OutFormatMessage;
 import com.wanhuhealth.rules.batch.mapper.DiseaseInfoMapper;
 import com.wanhuhealth.rules.batch.mapper.DrugInformationMapper;
 import com.wanhuhealth.rules.batch.mapper.OrderInfoMapper;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -32,8 +33,8 @@ import java.util.List;
  * Created by admin on 2017/7/17.
  */
 @Component
-public class DroolsProcessTaskUnit {
-    private static Logger logger = Logger.getLogger(DroolsProcessTaskUnit.class);
+public class DroolsProcessTaskService {
+    private static Logger logger = Logger.getLogger(DroolsProcessTaskService.class);
 
     @Autowired
     OrderInfoMapper orderInfoMapper;
@@ -44,16 +45,15 @@ public class DroolsProcessTaskUnit {
     @Autowired
     ComputeSalience computeSalience;
     DecimalFormat df   = new DecimalFormat("######0.00");
-    final String sessionName = "wanHu";
-    final String hlSessionName = "HL";
+
+
     static FileWriter fw = null;
     static FileWriter modelFw = null;
     static KieContainer kieContainer;
-    static String direction = "d://drools_data//"; // window
-//    static String direction = "/Users/zcx/drools_data/"; // mac
+
     static{
         try {
-            File  fileD = new File(direction);
+            File  fileD = new File(RulesConstant.data_direction);
             if(fileD.exists()){
                 if(!fileD.isDirectory()){
                     System.out.println("drools_data的文件已经存在");
@@ -62,9 +62,9 @@ public class DroolsProcessTaskUnit {
                 fileD.mkdir();
             }
             String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
-            File file = new File(String.format(direction + "DroolsResult_%s.txt", tail));
+            File file = new File(String.format(RulesConstant.data_direction + "DroolsResult_%s.txt", tail));
             fw = new FileWriter(file, true);
-            File modelFile = new File(String.format(direction + "DroolsModels_%s.txt", tail));
+            File modelFile = new File(String.format(RulesConstant.data_direction + "DroolsModels_%s.txt", tail));
             modelFw = new FileWriter(modelFile, true);
             KieServices kieService = KieServices.Factory.get();
             kieContainer = kieService.getKieClasspathContainer();
@@ -92,13 +92,13 @@ public class DroolsProcessTaskUnit {
                 modelFw.write("\n");
                 modelFw.flush();
                 ResResult resResult = new ResResult();
-                kieSession = kieContainer.newKieSession(hlSessionName);
+                kieSession = kieContainer.newKieSession(RulesConstant.hlSessionName);
                 kieSession.setGlobal("resResult", resResult);
                 kieSession.setGlobal("computeSalience", computeSalience);
                 kieSession.insert(orderInfoRuleModel);
                 kieSession.fireAllRules();
                 kieSession.dispose();
-                kieSession = kieContainer.newKieSession(sessionName);
+                kieSession = kieContainer.newKieSession(RulesConstant.sessionName);
                 kieSession.setGlobal("resResult", resResult);
                 kieSession.insert(orderInfoRuleModel);
                 kieSession.fireAllRules();
@@ -281,7 +281,7 @@ public class DroolsProcessTaskUnit {
                     msg.setFrequency(drugInformation.getFrequency());
                     msg.setPrice(drugInformation.getPrice() + "");
                     msg.setNumber(drugInformation.getAmount() + "");
-                    msg.setTotal(df.format(drugInformation.getAmount() * drugInformation.getPrice()));
+                    msg.setTotal(new BigDecimal(drugInformation.getAmount()).multiply(new BigDecimal(drugInformation.getPrice())).toString());
                     String auditNumber = "";
                     for (DrugInfoRuleModel model : orderInfoRuleModel.getDrugInfoList()) {
                         if(model.getDrugId() == drugInformation.getDrugId()){
@@ -291,12 +291,19 @@ public class DroolsProcessTaskUnit {
                     String ruleViolates = "";
                     for (RuleResult ruleResult : orderInfoRuleModel.getRuleResultList()) {
                         if(ruleResult.getDrugId() == drugInformation.getDrugId()){
-                            ruleViolates += ruleResult.getRuleNo() + " ";
+                            ruleViolates += "," + ruleResult.getMarkName();
+                            if (ruleResult.getSaveCount() != 0.0) {
+                                msg.getComplexSave().put(ruleResult.getMarkName(), ruleResult.getSaveCount());
+                            }
                         }
                     }
-                    msg.setRuleViolates(ruleViolates);
+                    if(StringUtils.isNotBlank(ruleViolates)) {
+                        msg.setRuleViolates(ruleViolates.substring(1));
+                    }else{
+                        msg.setRuleViolates("");
+                    }
                     if(StringUtils.isNotBlank(auditNumber)){
-                        msg.setAuditTotal(df.format(Double.valueOf(auditNumber) * drugInformation.getPrice()));
+                        msg.setAuditTotal(new BigDecimal(auditNumber).multiply(new BigDecimal(drugInformation.getPrice())).toString());
                     }else{
                         auditNumber = drugInformation.getAmount() + "";
                         msg.setAuditTotal(msg.getTotal());

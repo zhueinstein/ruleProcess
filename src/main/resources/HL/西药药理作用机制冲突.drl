@@ -28,7 +28,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicinePharmacologic");
-       ruleResult.setRuleNo("西药药理作用机制冲突");
+       ruleResult.setMarkName("西药药理作用机制冲突");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

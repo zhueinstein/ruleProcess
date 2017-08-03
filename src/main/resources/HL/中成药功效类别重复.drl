@@ -28,7 +28,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -58,7 +58,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -88,7 +88,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -118,7 +118,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -148,7 +148,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -178,7 +178,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setRuleNo("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -208,7 +208,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setRuleNo("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -238,7 +238,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setRuleNo("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -267,7 +267,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setRuleNo("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

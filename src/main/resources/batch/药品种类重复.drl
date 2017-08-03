@@ -27,7 +27,7 @@ then
           RuleResult ruleResult = new RuleResult();
           ruleResult.setRuleCheckObjectType(2);
           ruleResult.setRuleMark("dupGenericName");
-          ruleResult.setRuleNo("药品种类重复");
+          ruleResult.setMarkName("药品种类重复");
           ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
               if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

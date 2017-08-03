@@ -26,7 +26,7 @@ then
         ruleResult.setRuleCheckObjectType(1);
         ruleResult.setMessage("westernMedicineInteraction:西药相互作用(利福平 drug with 硝苯地平)");
         ruleResult.setRuleMark("westernMedicineInteraction");
-        ruleResult.setRuleNo("西药相互作用");
+        ruleResult.setMarkName("西药相互作用");
         ruleResult.setDrugId(model.getDrugId());
          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -56,7 +56,7 @@ then
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 奥美拉唑)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用");
+         ruleResult.setMarkName("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -86,7 +86,7 @@ then
            ruleResult.setRuleCheckObjectType(1);
            ruleResult.setMessage("westernMedicineInteraction:西药相互作用(硫酸氯吡格雷 drug with 埃索拉唑)");
            ruleResult.setRuleMark("westernMedicineInteraction");
-           ruleResult.setRuleNo("西药相互作用");
+           ruleResult.setMarkName("西药相互作用");
            ruleResult.setDrugId(model.getDrugId());
             for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                          if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -115,7 +115,7 @@ then
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(苯磺酸氨氯地平 drug with 胺碘酮)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用");
+         ruleResult.setMarkName("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -145,7 +145,7 @@ rule "westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with �
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setMessage("westernMedicineInteraction:西药相互作用(阿法骨化醇 drug with 碳酸钙D3)");
          ruleResult.setRuleMark("westernMedicineInteraction");
-         ruleResult.setRuleNo("西药相互作用");
+         ruleResult.setMarkName("西药相互作用");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

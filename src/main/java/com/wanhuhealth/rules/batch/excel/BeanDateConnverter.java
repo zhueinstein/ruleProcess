@@ -1,4 +1,4 @@
-package com.wanhuhealth.rules.batch.export;
+package com.wanhuhealth.rules.batch.excel;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.lang.time.DateUtils;

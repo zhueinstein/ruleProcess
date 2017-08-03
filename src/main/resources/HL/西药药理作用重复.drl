@@ -28,7 +28,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicineDuplicate");
-       ruleResult.setRuleNo("西药药理作用重复");
+       ruleResult.setMarkName("西药药理作用重复");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -59,7 +59,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("westernMedicineDuplicate");
-        ruleResult.setRuleNo("西药药理作用重复");
+        ruleResult.setMarkName("西药药理作用重复");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -91,7 +91,7 @@ then
           RuleResult ruleResult = new RuleResult();
           ruleResult.setRuleCheckObjectType(2);
           ruleResult.setRuleMark("westernMedicineDuplicate");
-          ruleResult.setRuleNo("西药药理作用重复");
+          ruleResult.setMarkName("西药药理作用重复");
           ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
               if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -122,7 +122,7 @@ then
            RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("westernMedicineDuplicate");
-           ruleResult.setRuleNo("西药药理作用重复");
+           ruleResult.setMarkName("西药药理作用重复（慎用）");
            ruleResult.setDrugId(model.getDrugId());
            /*for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -154,7 +154,7 @@ then
            RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("westernMedicineDuplicate");
-           ruleResult.setRuleNo("西药药理作用重复");
+           ruleResult.setMarkName("西药药理作用重复（慎用）");
            ruleResult.setDrugId(model.getDrugId());
            /*for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -187,7 +187,7 @@ then
            RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("westernMedicineDuplicate");
-           ruleResult.setRuleNo("西药药理作用重复");
+           ruleResult.setMarkName("西药药理作用重复（慎用）");
            ruleResult.setDrugId(model.getDrugId());
            /*for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

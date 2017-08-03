@@ -29,7 +29,7 @@ then
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setMessage("mergeDrug:联合用药不合理-种类(适应症为高血压的药品)");
         ruleResult.setRuleMark("mergeDrug");
-        ruleResult.setRuleNo("联合用药不合理-种类");
+        ruleResult.setMarkName("联合用药不合理-种类");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                 if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

@@ -15,8 +15,9 @@ public class RuleResult {
 	private String ruleMark;
 	private Map<String, Object> objectMap = Maps.newHashMap();
 	private String level;// 级别 （warning:警告，forbidden: 禁止，ignore:忽略）
-	private String ruleNo;
+	private String markName;
 	private Long drugId;
+	private Double saveCount = 0.0;
 	public String getMessage() {
 		return message;
 	}
@@ -65,12 +66,12 @@ public class RuleResult {
 		this.level = level;
 	}
 
-	public String getRuleNo() {
-		return ruleNo;
+	public String getMarkName() {
+		return markName;
 	}
 
-	public void setRuleNo(String ruleNo) {
-		this.ruleNo = ruleNo;
+	public void setMarkName(String markName) {
+		this.markName = markName;
 	}
 
     public Long getDrugId() {
@@ -80,4 +81,12 @@ public class RuleResult {
     public void setDrugId(Long drugId) {
         this.drugId = drugId;
     }
+
+	public Double getSaveCount() {
+		return saveCount;
+	}
+
+	public void setSaveCount(Double saveCount) {
+		this.saveCount = saveCount;
+	}
 }

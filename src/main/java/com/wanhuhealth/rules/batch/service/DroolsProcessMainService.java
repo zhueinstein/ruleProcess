@@ -1,7 +1,7 @@
-package com.wanhuhealth.rules.batch.rest;
+package com.wanhuhealth.rules.batch.service;
 
 
-import com.wanhuhealth.rules.batch.export.Json2ExcelMain;
+import com.wanhuhealth.rules.batch.excel.Json2ExcelMain;
 import com.wanhuhealth.rules.utils.RuleTaskThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -13,11 +13,11 @@ import javax.annotation.PostConstruct;
  * Created by admin on 2017/7/17.
  */
 @Component
-public class DroolsProcessMain {
+public class DroolsProcessMainService {
     @Autowired
     ThreadPoolTaskExecutor threadPoolExecutor;
     @Autowired
-    DroolsProcessTaskUnit batchRunTask;
+    DroolsProcessTaskService batchRunTask;
     @PostConstruct
     public void batchRunTask() throws Exception {
         Long begin = System.currentTimeMillis();
@@ -42,15 +42,17 @@ public class DroolsProcessMain {
         threadPoolExecutor.execute(new RuleTaskThread("2017-05-01", "2017-06-01", batchRunTask));
         threadPoolExecutor.execute(new RuleTaskThread("2017-06-01", "2017-07-01", batchRunTask));
         threadPoolExecutor.execute(new RuleTaskThread("2017-07-01", "2017-08-01", batchRunTask));
-//        threadPoolExecutor.execute(new RuleTaskThread("2016-03-07", "2016-03-08", batchRunTask));
+//        threadPoolExecutor.execute(new RuleTaskThread("2016-01-25", "2016-01-26", batchRunTask));
         while(true){
             if(threadPoolExecutor.getActiveCount() == 0){
-                DroolsProcessTaskUnit.fw.close();
-                DroolsProcessTaskUnit.modelFw.close();
+                DroolsProcessTaskService.fw.close();
+                DroolsProcessTaskService.modelFw.close();
                 Long end = System.currentTimeMillis();
                 System.out.println(String.format("Multi thread is processed! It costs %s%s", batchRunTask.df.format(Double.valueOf(end - begin) / (1000 * 60)), "minutes"));
                 System.out.println("xml文件转换成xlsx文件开始：");
                 Json2ExcelMain.export(Json2ExcelMain.readList());
+                Json2ExcelMain.exportEveryRulePercent();
+                Json2ExcelMain.exportTotalPercent();
                 break;
             }else {
                 Thread.sleep(5000);
@@ -59,7 +61,5 @@ public class DroolsProcessMain {
                                 threadPoolExecutor.getThreadPoolExecutor().getTaskCount())* 100,"%"));
             }
         }
-
-//        System.out.println(threadPoolExecutor.getThreadPoolExecutor().getCorePoolSize());
     }
 }

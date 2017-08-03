@@ -1,4 +1,6 @@
-package com.wanhuhealth.rules.batch.export;
+package com.wanhuhealth.rules.batch.excel;
+
+import java.util.Hashtable;
 
 /**
  * Created by admin on 2017/7/17.
@@ -27,6 +29,7 @@ public class OutFormatMessage {
  private String auditNumber; //审核后数量
  private String auditTotal; //审核后总价
  private String orderAuditTotal; // 审核后订单总价
+ private Hashtable<String, Double> complexSave = new Hashtable<String, Double>(); // 组合扣费详情
     public String getOrderNO() {
         return orderNO;
     }
@@ -209,5 +212,13 @@ public class OutFormatMessage {
 
     public void setPatientIdCard(String patientIdCard) {
         this.patientIdCard = patientIdCard;
+    }
+
+    public Hashtable<String, Double> getComplexSave() {
+        return complexSave;
+    }
+
+    public void setComplexSave(Hashtable<String, Double> complexSave) {
+        this.complexSave = complexSave;
     }
 }

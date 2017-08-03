@@ -25,7 +25,7 @@ then
         ruleResult.setRuleCheckObjectType(1);
         ruleResult.setMessage("ChinesePatentMedicineToxicity:中成药毒副作用累加(脑安胶囊 with 复方丹参滴丸)");
         ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
-        ruleResult.setRuleNo("中成药毒副作用累加");
+        ruleResult.setMarkName("中成药毒副作用累加");
         ruleResult.setDrugId(model.getDrugId());
          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -53,7 +53,7 @@ then
          RuleResult ruleResult = new RuleResult();
          ruleResult.setRuleCheckObjectType(1);
          ruleResult.setRuleMark("ChinesePatentMedicineToxicity");
-         ruleResult.setRuleNo("中成药毒副作用累加");
+         ruleResult.setMarkName("中成药毒副作用累加");
          ruleResult.setDrugId(model.getDrugId());
           for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                        if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

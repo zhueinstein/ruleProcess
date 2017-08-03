@@ -25,7 +25,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
-       ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复");
+       ruleResult.setMarkName("中西复方制剂与西药制剂成分重复");
        ruleResult.setDrugId($drugInfo.getDrugId());
        $drugInfo.setBuyAmount(0.00);
        $drugInfo.setOmit(true);
@@ -45,7 +45,7 @@ then
      RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
-           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复");
+           ruleResult.setMarkName("中西复方制剂与西药制剂成分重复");
            ruleResult.setDrugId($drugInfo.getDrugId());
            $drugInfo.setBuyAmount(0.00);
            $drugInfo.setOmit(true);
@@ -67,7 +67,7 @@ then
      RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
-           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复");
+           ruleResult.setMarkName("中西复方制剂与西药制剂成分重复");
            ruleResult.setDrugId($drugInfo.getDrugId());
            $drugInfo.setBuyAmount(0.00);
            $drugInfo.setOmit(true);
@@ -89,7 +89,7 @@ then
      RuleResult ruleResult = new RuleResult();
            ruleResult.setRuleCheckObjectType(2);
            ruleResult.setRuleMark("CompoundChineseWesternAndWesternMedicine");
-           ruleResult.setRuleNo("中西复方制剂与西药制剂成分重复");
+           ruleResult.setMarkName("中西复方制剂与西药制剂成分重复");
            ruleResult.setDrugId($drugInfo.getDrugId());
            $drugInfo.setBuyAmount(0.00);
            $drugInfo.setOmit(true);

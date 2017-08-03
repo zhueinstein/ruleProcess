@@ -25,7 +25,7 @@ then
     ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
     ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+糖尿病+哮喘 drug with β受体阻滞剂");
     ruleResult.setRuleMark("mergeSymptom");
-    ruleResult.setRuleNo("合并症用药不合理");
+    ruleResult.setMarkName("合并症用药不合理");
     ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
     $drugInfo.setOmit(true);
@@ -48,7 +48,7 @@ then
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 排钾利尿剂)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理");
+     ruleResult.setMarkName("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
       $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -71,7 +71,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氨苯蝶啶)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理");
+     ruleResult.setMarkName("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
      $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -93,7 +93,7 @@ rule "mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 
      ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
      ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+痛风发作期 drug with 氢氯噻嗪)");
      ruleResult.setRuleMark("mergeSymptom");
-     ruleResult.setRuleNo("合并症用药不合理");
+     ruleResult.setMarkName("合并症用药不合理");
      ruleResult.setDrugId($drugInfo.getDrugId());
       $drugInfo.setBuyAmount(0.0);
      $drugInfo.setOmit(true);
@@ -114,7 +114,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 排钾利尿剂)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理");
+   ruleResult.setMarkName("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);
@@ -137,7 +137,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氨苯蝶啶)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理");
+   ruleResult.setMarkName("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);
@@ -160,7 +160,7 @@ then
    ruleResult.setRuleCheckObjectType(RulesCheckTypeEnum.RULE_DRUG.getIndex());
    ruleResult.setMessage("mergeSymptom:合并症用药不合理(高血压+高尿酸血症 drug with 氢氯噻嗪)");
    ruleResult.setRuleMark("mergeSymptom");
-   ruleResult.setRuleNo("合并症用药不合理");
+   ruleResult.setMarkName("合并症用药不合理");
    ruleResult.setDrugId($drugInfo.getDrugId());
     $drugInfo.setBuyAmount(0.0);
    $drugInfo.setOmit(true);
