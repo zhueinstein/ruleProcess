@@ -13,7 +13,7 @@ global ResResult resResult;
 global ComputeSalience computeSalience;
 
 //中成药功效类别重复	商品名为脑心通胶囊	商品名为利脑心胶囊		禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通胶囊 with 利脑心胶囊)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通－利脑心)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -28,7 +28,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(脑心通－利脑心)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -43,7 +43,7 @@ then
  end
 
 //中成药功效类别重复	商品名为脑心通胶囊	商品名为血塞通软胶囊		禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通胶囊 with 血塞通软胶囊)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通－血塞通软胶囊)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -58,7 +58,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(脑心通－血塞通软胶囊)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -73,7 +73,7 @@ then
  end
 
 //中成药功效类别重复	商品名为脑心通胶囊	商品名为血塞通片		禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通胶囊 with 血塞通片)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通－血塞通片)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -88,7 +88,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(脑心通－血塞通片)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -103,7 +103,7 @@ then
  end
 
 //中成药功效类别重复	商品名为脑心通胶囊	商品名为通心络胶囊				禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通胶囊 with 通心络胶囊)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(脑心通－通心络)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -118,7 +118,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(脑心通－通心络)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -133,7 +133,7 @@ then
  end
 
 // 中成药功效类别重复	商品名为复方丹参滴丸	商品名为心元胶囊		禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸 with 心元胶囊)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸－心元胶囊)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -148,7 +148,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(复方丹参滴丸－心元胶囊)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -163,7 +163,7 @@ then
  end
 
 // 中成药功效类别重复	商品名为复方丹参滴丸	商品名为芪参益气滴丸		禁忌	优先扣除处方中总价高的药品
-rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸 with 芪参益气滴丸)"
+rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸－芪参益气滴丸)"
 salience computeSalience.ChinesePatentMedicineDuplicate
 lock-on-active true
 when
@@ -178,7 +178,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-       ruleResult.setMarkName("中成药功效类别重复");
+       ruleResult.setMarkName("中成药功效类别重复(复方丹参滴丸－芪参益气滴丸)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -193,7 +193,7 @@ then
  end
 
  // 中成药功效类别重复	商品名为复方丹参滴丸	商品名为复方丹参片		禁忌	优先扣除处方中总价高的药品
- rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸 with 复方丹参片)"
+ rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸－复方丹参片)"
  salience computeSalience.ChinesePatentMedicineDuplicate
  lock-on-active true
  when
@@ -208,7 +208,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setMarkName("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复(复方丹参滴丸－复方丹参片)");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -223,7 +223,7 @@ then
   end
 
 // 中成药功效类别重复	商品名为复方丹参滴丸	商品名为心可舒片		禁忌	优先扣除处方中总价高的药品
- rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸 with 心可舒片)"
+ rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(复方丹参滴丸－心可舒片)"
  salience computeSalience.ChinesePatentMedicineDuplicate
  lock-on-active true
  when
@@ -238,7 +238,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setMarkName("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复(复方丹参滴丸－心可舒片)");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
@@ -252,7 +252,7 @@ then
      update($orderInfo)
   end
 // 中成药功效类别重复	商品名为稳心颗粒	商品名为参松养心胶囊		禁忌	优先扣除处方中总价高的药品
- rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(稳心颗粒 with 参松养心胶囊)"
+ rule "ChinesePatentMedicineDuplicate:中成药功效类别重复(稳心颗粒－参松养心胶囊)"
  salience computeSalience.ChinesePatentMedicineDuplicate
  lock-on-active true
  when
@@ -267,7 +267,7 @@ then
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(2);
         ruleResult.setRuleMark("ChinesePatentMedicineDuplicate");
-        ruleResult.setMarkName("中成药功效类别重复");
+        ruleResult.setMarkName("中成药功效类别重复(稳心颗粒－参松养心胶囊)");
         ruleResult.setDrugId(model.getDrugId());
         for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
             if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

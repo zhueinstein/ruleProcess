@@ -29,6 +29,8 @@ public class OutFormatMessage {
  private String auditNumber; //审核后数量
  private String auditTotal; //审核后总价
  private String orderAuditTotal; // 审核后订单总价
+ private Boolean legal = true; // 是否违规 true 合规 false 违规
+ private Boolean show = false;
  private Hashtable<String, Double> complexSave = new Hashtable<String, Double>(); // 组合扣费详情
     public String getOrderNO() {
         return orderNO;
@@ -220,5 +222,21 @@ public class OutFormatMessage {
 
     public void setComplexSave(Hashtable<String, Double> complexSave) {
         this.complexSave = complexSave;
+    }
+
+    public Boolean getLegal() {
+        return legal;
+    }
+
+    public void setLegal(Boolean legal) {
+        this.legal = legal;
+    }
+
+    public Boolean getShow() {
+        return show;
+    }
+
+    public void setShow(Boolean show) {
+        this.show = show;
     }
 }

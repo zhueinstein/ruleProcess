@@ -14,7 +14,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -22,9 +21,8 @@ import java.util.*;
  *
  */
 public class Json2ExcelMain {
-    private static DecimalFormat df   = new DecimalFormat("######0.00");
     private static Hashtable<String, BigDecimal> ht = new Hashtable<String, BigDecimal>();
-
+    private static HashSet<String> hs = Sets.newHashSet();
     public static void main(String[] args) {
         Json2ExcelMain.export(Json2ExcelMain.readList());
         Json2ExcelMain.exportEveryRulePercent();
@@ -116,110 +114,116 @@ public class Json2ExcelMain {
                 return o1.getOrderNO().compareTo(o2.getOrderNO());
             }
         });
-        sumPriceEveyOrder(list);
-        HashSet<String> hs = Sets.newHashSet();
-        String orderNo = "";
+        // 筛选违规的订单编号
+
         for (OutFormatMessage outFormatMessage : list) {
-            if(StringUtils.isBlank(orderNo) || !outFormatMessage.getOrderNO().equals(orderNo)){
-                outFormatMessage.setOrderTotal(ht.get(outFormatMessage.getOrderNO()).toString());
-                outFormatMessage.setOrderAuditTotal((ht.get(outFormatMessage.getOrderNO() + "A")).toString());
-
-                if(new BigDecimal(outFormatMessage.getOrderAuditTotal()).setScale(2, RoundingMode.HALF_UP).equals(new BigDecimal(outFormatMessage.getOrderTotal()).setScale(2, RoundingMode.HALF_UP))){
-                    hs.add(outFormatMessage.getOrderNO());
-                }
-
+            if(!outFormatMessage.getLegal()) {
+                hs.add(outFormatMessage.getOrderNO());
             }
-            orderNo = outFormatMessage.getOrderNO();
         }
 
-        List<OutFormatMessage> list1 = Lists.newArrayList();
+        handleSummaryPrice(list);
+
+        HashSet<String> in = Sets.newHashSet();
+        List<OutFormatMessage> illegalList = Lists.newArrayList();
         for (OutFormatMessage outFormatMessage : list) {
-                if(hs.add(outFormatMessage.getOrderNO())){
-                    hs.remove(outFormatMessage.getOrderNO());
-                    list1.add(outFormatMessage);
+                if(hs.contains(outFormatMessage.getOrderNO())){
+                    if(in.add(outFormatMessage.getOrderNO())) {
+                        outFormatMessage.setShow(true);
+                    }
+                    illegalList.add(outFormatMessage);
                 }
         }
-        return list1;
+        return illegalList;
     }
 
-     private static void sumPriceEveyOrder(List<OutFormatMessage> list){
+     private static void handleSummaryPrice(List<OutFormatMessage> list){
         BigDecimal decimal;
-        for (OutFormatMessage outFormatMessage : list) {
-            if(ht.keySet().contains(outFormatMessage.getOrderNO())){
-                decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getNumber()));
-                decimal.setScale(2, RoundingMode.HALF_UP);
-               ht.put(outFormatMessage.getOrderNO(), ht.get(outFormatMessage.getOrderNO()).add(decimal));
-            }else{
-                decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getNumber()));
-                decimal.setScale(2, RoundingMode.HALF_UP);
-               ht.put(outFormatMessage.getOrderNO(), decimal);
+        String key;
+        BigDecimal price;
+        System.out.println(hs.size());
+         for (OutFormatMessage outFormatMessage : list) {
+            if(!hs.contains(outFormatMessage.getOrderNO())){
+                continue;
             }
-            if(ht.keySet().contains(outFormatMessage.getOrderNO() + "A")){
-                decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getAuditNumber()));
-                decimal.setScale(2, RoundingMode.HALF_UP);
-                ht.put(outFormatMessage.getOrderNO() + "A", ht.get(outFormatMessage.getOrderNO() + "A").add(decimal));
+            price = new BigDecimal(outFormatMessage.getPrice());
+
+            // 个人每个订单合并后的价格
+            key = outFormatMessage.getOrderNO();
+            decimal = price.multiply(new BigDecimal(outFormatMessage.getNumber()));
+            decimal.setScale(2, RoundingMode.HALF_UP);
+            if(ht.keySet().contains(key)){
+               ht.put(key, ht.get(key).add(decimal));
             }else{
-                decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getAuditNumber()));
-                decimal.setScale(2, RoundingMode.HALF_UP);
-                ht.put(outFormatMessage.getOrderNO() + "A", decimal);
+               ht.put(key, decimal);
             }
 
-            if (StringUtils.isNotBlank(outFormatMessage.getRuleViolates())) {
+            // 个人每天订单审核后的价格
+            key = outFormatMessage.getOrderNO() + "A";
+            decimal = price.multiply(new BigDecimal(outFormatMessage.getAuditNumber()));
+            decimal.setScale(2, RoundingMode.HALF_UP);
+            if(ht.keySet().contains(key)){
+                ht.put(key, ht.get(key).add(decimal));
+            }else{
+                ht.put(key, decimal);
+            }
 
-                if(!Collections.disjoint(Arrays.asList(outFormatMessage.getRuleViolates().split(",")), RulesConstant.common)){
-                    if(ht.keySet().contains("common")){
-                        decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal((Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber()))));
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        ht.put("common", ht.get("common").add(decimal));
-                    }else{
-                        decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal((Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber()))));
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        ht.put("common", decimal);
-                    }
-                }
-                if(!Collections.disjoint(Arrays.asList(outFormatMessage.getRuleViolates().split(",")), RulesConstant.medicine)){
-                    if(ht.keySet().contains("medicine")){
-                        decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal((Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber()))));
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        ht.put("medicine", ht.get("medicine").add(decimal));
-                    }else{
-                        decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal((Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber()))));
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        ht.put("medicine", decimal);
-                    }
-                }
-
-                if (ht.keySet().contains(outFormatMessage.getRuleViolates() + "EV")) {
-                    decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal((Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber()))));
-                    decimal.setScale(2, RoundingMode.HALF_UP);
-                    ht.put(outFormatMessage.getRuleViolates() + "EV", ht.get(outFormatMessage.getRuleViolates() + "EV").add(decimal) );
-                } else {
-                    if(outFormatMessage.getComplexSave() != null && outFormatMessage.getComplexSave().size() > 0) {
-                        for (String ruleMark : outFormatMessage.getRuleViolates().split(",")) {
-                            decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getComplexSave().get(ruleMark)));
-                            decimal.setScale(2, RoundingMode.HALF_UP);
-                            ht.put(ruleMark + "EV", decimal );
-                        }
-                    }else{
-                        decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber())));
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        ht.put(outFormatMessage.getRuleViolates() + "EV", decimal);
-                    }
-
-                }
-
-                if(ht.keySet().contains("kfTotal")){
-                    decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber())));
-                    decimal.setScale(2, RoundingMode.HALF_UP);
-                    ht.put("kfTotal", ht.get("kfTotal").add(decimal));
+            // 通用订单节余
+            if(!Collections.disjoint(Arrays.asList(outFormatMessage.getRuleViolates().split(",")), RulesConstant.common)){
+                key = "common";
+                decimal = price.multiply(new BigDecimal(outFormatMessage.getNumber()).subtract(new BigDecimal(outFormatMessage.getAuditNumber())));
+                decimal.setScale(2, RoundingMode.HALF_UP);
+                if(ht.keySet().contains(key)){
+                    ht.put(key, ht.get(key).add(decimal));
                 }else{
-                    decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(Double.valueOf(outFormatMessage.getNumber()) - Double.valueOf(outFormatMessage.getAuditNumber())));
-                    decimal.setScale(2, RoundingMode.HALF_UP);
-                    ht.put("kfTotal", decimal);
+                    ht.put(key, decimal);
                 }
             }
 
+            // 药学部规则节余
+//            if(!Collections.disjoint(Arrays.asList(outFormatMessage.getRuleViolates().split(",")), RulesConstant.medicineNames)){
+             if (RulesConstant.medicineNames.contains(outFormatMessage.getRuleViolates())) {
+                 key = "medicine";
+                decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getNumber()).subtract(new BigDecimal(outFormatMessage.getAuditNumber())));
+                decimal.setScale(2, RoundingMode.HALF_UP);
+                if(ht.keySet().contains(key)){
+                    ht.put(key, ht.get(key).add(decimal));
+                }else{
+                    ht.put(key, decimal);
+                }
+            }
+
+            // 每一种规则节约
+             if(StringUtils.isNotBlank(outFormatMessage.getRuleViolates())) {
+                 key = outFormatMessage.getRuleViolates() + "EV";
+                 decimal = price.multiply(new BigDecimal(outFormatMessage.getNumber()).subtract(new BigDecimal(outFormatMessage.getAuditNumber())));
+                 decimal.setScale(2, RoundingMode.HALF_UP);
+                 if (ht.keySet().contains(key)) {
+                     ht.put(key, ht.get(key).add(decimal));
+                 } else {
+                     if (outFormatMessage.getComplexSave() != null && outFormatMessage.getComplexSave().size() > 0) {
+                         for (String ruleMark : outFormatMessage.getRuleViolates().split(",")) {
+                             decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getComplexSave().get(ruleMark)));
+                             decimal.setScale(2, RoundingMode.HALF_UP);
+                             ht.put(ruleMark + "EV", decimal);
+                         }
+                     } else {
+                         ht.put(key, decimal);
+                     }
+
+                 }
+             }
+            // 所有规则总节约
+            key = "kfTotal";
+            decimal = price.multiply(new BigDecimal(outFormatMessage.getNumber()).subtract(new BigDecimal(outFormatMessage.getAuditNumber())));
+            decimal.setScale(2, RoundingMode.HALF_UP);
+            if(ht.keySet().contains(key)){
+                ht.put(key, ht.get(key).add(decimal));
+            }else{
+                ht.put(key, decimal);
+            }
         }
+
     }
     public static void export(List<OutFormatMessage> list){
         final CountClick click = new CountClick();
@@ -312,14 +316,14 @@ public class Json2ExcelMain {
                         cell.setCellValue(decimal.doubleValue());
                         break;
                     case 17:
-                        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+                        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                         decimal = new BigDecimal(vo.getTotal());
                         decimal.setScale(2, RoundingMode.HALF_UP);
                         cell.setCellValue(decimal.doubleValue());
                         break;
                     case 18:
-                        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        if(StringUtils.isNotBlank(vo.getOrderTotal())) {
+                        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                        if(vo.getShow()) {
                             cell.setCellValue(ht.get(vo.getOrderNO()).doubleValue());
                         }
                         break;
@@ -334,14 +338,16 @@ public class Json2ExcelMain {
                         cell.setCellValue(decimal.doubleValue());
                         break;
                     case 21:
-                        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-                        decimal = new BigDecimal(vo.getAuditTotal());
-                        decimal.setScale(2, RoundingMode.HALF_UP);
-                        cell.setCellValue(decimal.doubleValue());
+                        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                        if(vo.getShow()) {
+                            decimal = new BigDecimal(vo.getAuditTotal());
+                            decimal.setScale(2, RoundingMode.HALF_UP);
+                            cell.setCellValue(decimal.doubleValue());
+                        }
                         break;
                     case 22:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        if(StringUtils.isNotBlank(vo.getOrderAuditTotal())) {
+                        if(vo.getShow()) {
                             cell.setCellValue(ht.get(vo.getOrderNO() + "A").doubleValue());
                         }
                         break;
@@ -398,7 +404,7 @@ public class Json2ExcelMain {
                         break;
                     case 2:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-                        cell.setCellValue(new BigDecimal(vo.getValue()).divide(ht.get("kfTotal"), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue() + "%");
+                        cell.setCellValue(new BigDecimal(vo.getValue()).multiply(new BigDecimal(100)).divide(ht.get("kfTotal"), 2, RoundingMode.HALF_UP).doubleValue() + "%");
                         break;
                 }
                 return cell;
@@ -439,7 +445,8 @@ public class Json2ExcelMain {
                     case 2:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                             if(ht.get("medicine") != null) {
-                                cell.setCellValue(ht.get("medicine").divide(ht.get("kfTotal"),2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue() + "%");
+                                System.out.println(ht.get("medicine"));
+                                cell.setCellValue(ht.get("medicine").divide(ht.get("kfTotal"),2,RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue() + "%");
                             }
                         break;
                     case 3:
@@ -451,7 +458,8 @@ public class Json2ExcelMain {
                     case 4:
                         cell.setCellType(XSSFCell.CELL_TYPE_STRING);
                             if(ht.get("common") != null) {
-                                cell.setCellValue(ht.get("common").divide(ht.get("kfTotal"),2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue() + "%");
+                                System.out.println(ht.get("common"));
+                                cell.setCellValue(ht.get("common").divide(ht.get("kfTotal"),2,RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).doubleValue() + "%");
                             }
                         break;
                 }
@@ -467,6 +475,5 @@ public class Json2ExcelMain {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 }

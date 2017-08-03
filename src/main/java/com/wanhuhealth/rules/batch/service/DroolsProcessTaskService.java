@@ -291,13 +291,14 @@ public class DroolsProcessTaskService {
                     String ruleViolates = "";
                     for (RuleResult ruleResult : orderInfoRuleModel.getRuleResultList()) {
                         if(ruleResult.getDrugId() == drugInformation.getDrugId()){
+                            msg.setLegal(false);
                             ruleViolates += "," + ruleResult.getMarkName();
                             if (ruleResult.getSaveCount() != 0.0) {
                                 msg.getComplexSave().put(ruleResult.getMarkName(), ruleResult.getSaveCount());
                             }
                         }
                     }
-                    if(StringUtils.isNotBlank(ruleViolates)) {
+                    if(!msg.getLegal()) {
                         msg.setRuleViolates(ruleViolates.substring(1));
                     }else{
                         msg.setRuleViolates("");

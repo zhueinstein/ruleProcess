@@ -9,7 +9,7 @@ import java.util.ArrayList
 global ResResult resResult;
 global ComputeSalience computeSalience;
 // 年龄限制	患者年龄≥65岁	类别7（主要成分）中包含冰片的中成药药品≥２种		禁忌	优先扣除处方中处方中总价高药品，最终保留1种。
-rule "ageLimit:年龄限制(≥65 drug with 冰片)"
+rule "ageLimit:年龄限制(含冰片中成药种类过多)"
 salience computeSalience.ageLimit
 lock-on-active true
 when
@@ -21,9 +21,9 @@ then
          DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
         RuleResult ruleResult = new RuleResult();
         ruleResult.setRuleCheckObjectType(1);
-        ruleResult.setMessage("ageLimit:年龄限制(≥65 drug with 冰片)");
+        ruleResult.setMessage("ageLimit:年龄限制(含冰片中成药种类过多)");
         ruleResult.setRuleMark("ageLimit");
-        ruleResult.setMarkName("年龄限制");
+        ruleResult.setMarkName("年龄限制(含冰片中成药种类过多)");
         ruleResult.setDrugId(model.getDrugId());
          for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
                       if(drugInfoRuleModel.getDrugId() == model.getDrugId()){

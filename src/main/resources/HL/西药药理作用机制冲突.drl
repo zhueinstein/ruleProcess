@@ -13,7 +13,7 @@ global ResResult resResult;
 global ComputeSalience computeSalience;
 
 //西药药理作用机制冲突	类别7（主要成分）为格列齐特的药品	类别7（主要成分）为那格列奈的药品		禁忌	优先扣除处方中总价高的药品
-rule "westernMedicinePharmacologic:西药药理作用机制冲突(格列齐特 drug with 那格列奈)"
+rule "westernMedicinePharmacologic:西药药理作用机制冲突(格列齐特－那格列奈)"
 salience computeSalience.westernMedicinePharmacologic
 lock-on-active true
 when
@@ -28,7 +28,7 @@ then
        RuleResult ruleResult = new RuleResult();
        ruleResult.setRuleCheckObjectType(2);
        ruleResult.setRuleMark("westernMedicinePharmacologic");
-       ruleResult.setMarkName("西药药理作用机制冲突");
+       ruleResult.setMarkName("西药药理作用机制冲突(格列齐特－那格列奈)");
        ruleResult.setDrugId(model.getDrugId());
        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
            if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
