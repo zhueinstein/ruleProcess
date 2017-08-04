@@ -79,7 +79,6 @@ public class DroolsProcessTaskService {
         click.setThreadName(threadName);
         try {
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data ……"));
-
             List<OrderInfo> orderInfoList = mergeOrderInfo(orderInfoMapper.findBetween2Date(start, end));
             System.out.println(String.format("线程: %s is processing %s", threadName, " loading data complete!"));
             click.setTotal(orderInfoList.size()* 1.0);

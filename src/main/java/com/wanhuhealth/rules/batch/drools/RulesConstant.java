@@ -30,8 +30,8 @@ public interface RulesConstant {
              "中成药与西药成分重复(血脂康－他汀类)","中成药主要成分相同(金水宝胶囊－百令胶囊)","中成药主要成分相同(脑安胶囊－华佗再造丸)",
              "中西复方制剂与西药制剂成分重复(消渴丸－格列本脲)","中西复方制剂与西药制剂成分重复(珍菊降压片－盐酸可乐定)","中西复方制剂与西药制剂成分重复(珍菊降压片－氢氯噻嗪)"
              );
-     String data_direction = "/Users/zcx/drools_data/"; // mac
-     // static String data_direction = "D:\\drools_data//"; // window
+//     String data_direction = "/Users/zcx/drools_data/"; // mac
+      static String data_direction = "D:\\drools_data//"; // window
      String tail = DateUtils.formatDate(new Date(), "yyyyMMddHHmm");
 
      String outFileName = String.format("%sRuleResult_%s.xlsx",data_direction, tail);

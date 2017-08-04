@@ -2,12 +2,15 @@ package com.wanhuhealth.rules.batch.service;
 
 
 import com.wanhuhealth.rules.batch.excel.Json2ExcelMain;
+import com.wanhuhealth.rules.utils.DateUtils;
 import com.wanhuhealth.rules.utils.RuleTaskThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by admin on 2017/7/17.
@@ -21,27 +24,18 @@ public class DroolsProcessMainService {
     @PostConstruct
     public void batchRunTask() throws Exception {
         Long begin = System.currentTimeMillis();
-        threadPoolExecutor.execute(new RuleTaskThread("2015-11-01", "2015-12-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2015-12-01", "2015-01-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-01-01", "2016-02-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-02-01", "2016-03-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-03-01", "2016-04-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-04-01", "2016-05-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-05-01", "2016-06-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-06-01", "2016-07-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-07-01", "2016-08-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-08-01", "2016-09-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-09-01", "2016-10-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-10-01", "2016-11-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-11-01", "2016-12-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2016-12-01", "2017-01-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-01-01", "2017-02-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-02-01", "2017-03-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-03-01", "2017-04-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-04-01", "2017-05-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-05-01", "2017-06-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-06-01", "2017-07-01", batchRunTask));
-        threadPoolExecutor.execute(new RuleTaskThread("2017-07-01", "2017-08-01", batchRunTask));
+        Calendar from = Calendar.getInstance();
+        from.set(2015,10,01); // 2015-11-01开始
+        Integer gap = 30; // 30天为一个线程的计算周期
+        Calendar to = Calendar.getInstance();
+        to.set(2015, 10, 01);
+        do{
+            to.add(Calendar.DATE, gap);
+            String taskBegin = DateUtils.formatDate(new Date(from.getTimeInMillis()),"yyyy-MM-dd");
+            String taskEnd = DateUtils.formatDate(new Date(to.getTimeInMillis()), "yyyy-MM-dd");
+            threadPoolExecutor.execute(new RuleTaskThread(taskBegin, taskEnd, batchRunTask));
+            from.add(Calendar.DATE, gap);
+        }while (from.getTimeInMillis() < System.currentTimeMillis());
 //        threadPoolExecutor.execute(new RuleTaskThread("2016-01-25", "2016-01-26", batchRunTask));
         while(true){
             if(threadPoolExecutor.getActiveCount() == 0){
