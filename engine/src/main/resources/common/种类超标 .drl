@@ -1,0 +1,55 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.drools.RuleResult
+import com.wanhuhealth.rules.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.drools.ResResult
+import java.util.Map
+import java.util.HashMap
+import java.util.HashSet
+import java.util.Collections
+import java.util.Comparator
+import java.util.concurrent.CopyOnWriteArrayList
+
+global ResResult resResult;
+salience 97
+lock-on-active true
+rule "drugTypeExceed:种类超标-处方中药品种类超过7种"
+when
+    $orderInfo: OrderInfoRuleModel(drugInfoList.size() > 7)
+then
+    CopyOnWriteArrayList<DrugInfoRuleModel> drugInfoRuleModels = new CopyOnWriteArrayList<DrugInfoRuleModel>($orderInfo.getDrugInfoList());
+    for (DrugInfoRuleModel drugInfoRuleModel : drugInfoRuleModels) {
+        if(drugInfoRuleModel.getBuyAmount() == 0.0){
+            drugInfoRuleModels.remove(drugInfoRuleModel);
+        }
+
+    }
+
+    Collections.sort(drugInfoRuleModels, new Comparator<DrugInfoRuleModel>(){
+         public int compare(DrugInfoRuleModel arg0, DrugInfoRuleModel arg1) {
+               Double d0 = arg0.getBuyAmount() * arg0.getPrice();
+               Double d1 = arg1.getBuyAmount() * arg1.getPrice();
+              return d0.compareTo(d1);
+         }
+    });
+
+    for (int index = 7; index < drugInfoRuleModels.size(); index++) {
+        for (DrugInfoRuleModel ruleModel : $orderInfo.getDrugInfoList()) {
+            if(ruleModel.getDrugId() == drugInfoRuleModels.get(index).getDrugId()){
+                ruleModel.setBuyAmount(0.0);
+                ruleModel.setOmit(true);
+                System.out.println(ruleModel.getDrugId());
+                break;
+            }
+        }
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(0);
+        ruleResult.setMessage("种类超标：用药信息中药品种类超过7种");
+        ruleResult.setRuleMark("drugTypeExceed");
+        ruleResult.setMarkName("种类超标");
+        ruleResult.setDrugId(drugInfoRuleModels.get(index).getDrugId());
+        resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo);
+end

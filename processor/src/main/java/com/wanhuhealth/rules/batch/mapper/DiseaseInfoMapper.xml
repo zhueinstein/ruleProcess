@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.batch.mapper.DiseaseInfoMapper">
+
+    <resultMap id="DiseaseInfoEntity" type="com.wanhuhealth.rules.batch.model.DiseaseInfo">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name" />
+    </resultMap>
+
+    <select id="diseaseInfoList" parameterType="java.lang.String" resultMap="DiseaseInfoEntity">
+        SELECT di.id, di.name
+        FROM order_disease t LEFT JOIN disease_info di ON t.disease_id = di.id
+        WHERE
+           t.order_id = #{orderId, jdbcType=VARCHAR}
+
+    </select>
+    <select id="findAll"  resultMap="DiseaseInfoEntity">
+        SELECT di.id, di.name
+        FROM order_disease t inner JOIN disease_info di ON t.disease_id = di.id
+
+    </select>
+    <select id="indicationList" parameterType="java.lang.Long" resultMap="DiseaseInfoEntity">
+        SELECT di.`id`, di.`name` FROM drug_indication t LEFT JOIN disease_info di ON di.`id` = t.`disease_id` WHERE t.`drug_id` = #{drugId, jdbcType=BIGINT}
+    </select>
+</mapper>

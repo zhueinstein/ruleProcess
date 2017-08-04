@@ -1,0 +1,38 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.drools.RuleResult
+import com.wanhuhealth.rules.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.drools.ResResult
+
+import java.util.Map
+import java.util.HashMap
+import java.util.Collections
+import java.util.List
+import java.util.ArrayList
+
+global ResResult resResult;
+salience 100
+lock-on-active true
+rule "diseaseNotMatch:适应症不符-处方中每个药品，其适应症与处方的＂疾病类型＂不匹配"
+when
+    $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList, $orderDisease: diseaseInfoList, diseaseInfoList.size > 0)
+    $drugInfo: (DrugInfoRuleModel(!omit, indicationList.size > 0, Collections.disjoint($orderDisease, indicationList) == true) from $drugInfoList)
+then
+
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setMessage("适应症不符：药品适应症与当前疾病不匹配");
+    ruleResult.setRuleMark("diseaseNotMatch");
+    ruleResult.setMarkName("适应症不符");
+    ruleResult.setDrugId($drugInfo.getDrugId());
+    for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+        if(drugInfoRuleModel.getDrugId() == $drugInfo.getDrugId()){
+            drugInfoRuleModel.setOmit(true);
+            drugInfoRuleModel.setBuyAmount(0.0);
+            break;
+        }
+    }
+    resResult.getRuleResultList().add(ruleResult);
+    update($orderInfo);
+end

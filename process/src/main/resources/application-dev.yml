@@ -1,0 +1,58 @@
+#server
+server:
+  port: 1989
+  tomcat:
+    uri-encoding: UTF-8
+
+# SPRING PROFILES
+spring:
+    datasource:
+        url: jdbc:mysql://10.1.10.51:3306/wanhu_sc0713_1?useUnicode=true&characterEncoding=utf-8&useSSL=true
+        username: mysql
+        password: 123456
+        driver-class-name: com.mysql.jdbc.Driver
+    redis:
+        database: 0
+        host: 127.0.0.1
+        port: 6379
+        timeout: 30000000
+        auth: 123456
+        pool:
+          max-idle: 8
+          min-idle: 0
+          max-active: 8
+          max-wait: -1
+
+# MyBatis
+mybatis:
+    typeAliasesPackage: com.wanhuhealth.**.mapper
+    mapperLocations: classpath:com.wanhuhealth/**/*Mapper.xml
+
+# LOGGING
+logging:
+    level:
+       com.Learning:DEBUG
+    file: D:/apache-tomcat-8.0.35/logs/learning.log
+
+os:
+  fileDir:
+    windows: d://drools_data/
+    mac: /Users/zcx/drools_data
+  fileName:
+    txt: DroolsResult_%s.txt
+    xlsx: RuleResult_%s.xlsx
+drools:
+  HL:
+    salience:
+      ageLimit:  65499  #年龄限制
+      mergeDrug: 65399 #联合用药不合理-种类
+      mergeSymptom: 65299 #合并症用药不合理
+      westernMedicineMainIngredientDuplicate: 65199 #西药主要成分重复
+      westernMedicineDuplicate: 65099 #西药药理作用重复
+      westernMedicinePharmacologic: 64999 #西药药理作用机制冲突
+      ChinesePatentMedicineDuplicate: 64899 #中成药功效类别重复
+      ChinesePatentMedicineIngredientDuplicate: 64799 #中成药主要成分相同
+      ChinesePatentMedicineToxicity: 64699 #中成药毒副作用累加
+      westernMedicineInteraction: 64599 #西药相互作用
+      CompoundChineseWesternAndWesternMedicine: 64499 #中西复方制剂与西药制剂成分重复
+      ChinesePatentWesternDuplicate: 64399 #中成药与西药成分重复

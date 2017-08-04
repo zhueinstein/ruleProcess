@@ -1,0 +1,13 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="threadPoolExecutor"
+		  class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="20" />  <!--最小线程数 -->
+		<property name="keepAliveSeconds" value="600" />  <!--线程池中空闲线程的存活时间单位秒 -->
+		<property name="maxPoolSize" value="25" />   <!--最大线程数 -->
+		<property name="queueCapacity" value="30" />   <!--缓冲队列大小 -->
+		<property name="threadNamePrefix" value="ruleProcessTaskTh-" /><!--线程池中产生的线程名字前缀 -->
+	</bean>
+
+</beans>

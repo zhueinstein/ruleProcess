@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.historic.runtime.mapper.RuleFilesMapper">
+
+    <resultMap id="RuleFilesEntity" type="com.wanhuhealth.rules.historic.model.CfgOrderDrugRules" extends="com.wanhuhealth.rules.utils.BaseMapper.BaseResultMap">
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+        <result column="rule" jdbcType="BLOB" property="rule" />
+        <result column="rule_mark" jdbcType="VARCHAR" property="ruleMark" />
+        <result column="on_off" jdbcType="VARCHAR" property="onOff" />
+        <result column="group" jdbcType="VARCHAR" property="group"/>
+        <collection property="hasRulesRegionCategory" column="id" javaType="ArrayList" select="com.wanhuhealth.rules.historic.runtime.mapper.RuleRegionMapper.findByRuleId"/>
+    </resultMap>
+
+    <!-- 查询所有的规则 -->
+    <sql id="Base_Column">
+        id,rule_name,rule,rule_mark,on_off,<include refid="com.wanhuhealth.rules.utils.BaseMapper.Base_Column"/>
+    </sql>
+    <select id="findAll" resultMap="RuleFilesEntity">
+        SELECT
+          <include refid="Base_Column"/>
+        FROM cfg_order_drug_rules t
+        WHERE t.del_flag = '0'
+
+    </select>
+
+    <select id="getByRuleMark" parameterType="java.lang.String" resultMap="RuleFilesEntity">
+        SELECT
+        <include refid="Base_Column"/>
+        FROM cfg_order_drug_rules t
+        WHERE  t.rule_mark = #{ruleMark, jdbcType=VARCHAR}
+    </select>
+</mapper>

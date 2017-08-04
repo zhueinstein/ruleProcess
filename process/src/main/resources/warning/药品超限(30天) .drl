@@ -1,0 +1,35 @@
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+
+import java.util.Map
+import java.util.HashMap
+import java.lang.Math;
+
+
+global ResResult resResult;
+
+salience 100
+lock-on-active true
+rule "buyAmtOutLimit:药品超限-单个药品，购买数量超过最大限量"
+   when
+       $orderInfo: OrderInfoRuleModel($drugInfoList:drugInfoList)
+       $drugInfo: (DrugInfoRuleModel($min: Math.ceil(Math.min(30 * maximumDoseDaily, 30 * useAmountDaily)/packageSize), buyAmount > $min)from $drugInfoList)
+   then
+       if(!$drugInfo.isOmit()){
+           RuleResult ruleResult = new RuleResult();
+           ruleResult.setRuleCheckObjectType(1);
+
+           ruleResult.setRuleMark("buyAmtOutLimit");
+           ruleResult.setMarkName("药品超限(30天)");
+           ruleResult.setDrugId($drugInfo.getDrugId());
+           resResult.getRuleResultList().add(ruleResult);
+
+       }
+       update($orderInfo)
+
+
+   end

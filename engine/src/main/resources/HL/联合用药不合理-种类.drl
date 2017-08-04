@@ -1,0 +1,44 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.drools.ResResult
+import com.wanhuhealth.rules.drools.RuleResult
+import com.wanhuhealth.rules.drools.ComputeSalience
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+
+global ResResult resResult;
+global ComputeSalience computeSalience;
+//联合用药不合理-种类	处方中适应症为高血压的药品	西药类别3降血压药单方＞3种		禁忌	优先扣除处方中处方中总价高药品，最终保留3种。
+
+rule "mergeDrug:联合用药不合理-种类(降血压药种类数过多)"
+salience computeSalience.mergeDrug
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugList: drugInfoList)
+    $dupList:ArrayList(size > 3) from collect(DrugInfoRuleModel(!omit, diseases contains "高血压", thirCategory == "降血压药单方") from $drugList)
+then
+
+    $dupList = OrderInfoRuleModel.removeZero($dupList);
+
+    for(int index = 3; index < $dupList.size(); index++){
+        DrugInfoRuleModel model = (DrugInfoRuleModel)$dupList.get(index);
+        RuleResult ruleResult = new RuleResult();
+        ruleResult.setRuleCheckObjectType(2);
+        ruleResult.setMessage("mergeDrug:联合用药不合理-种类(降血压药种类数过多)");
+        ruleResult.setRuleMark("mergeDrug");
+        ruleResult.setMarkName("联合用药不合理-种类(降血压药种类数过多)");
+        ruleResult.setDrugId(model.getDrugId());
+        for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+                if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+                    drugInfoRuleModel.setBuyAmount(0.00);
+                    drugInfoRuleModel.setOmit(true);
+                }
+        }
+        resResult.getRuleResultList().add(ruleResult);
+    }
+
+    update($orderInfo);
+ end

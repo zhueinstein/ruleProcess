@@ -1,0 +1,29 @@
+package com.wanhuhealth.rules
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import java.util.Map
+import java.util.HashMap
+package com.clickmed.platform.modules.rules.order
+import com.wanhuhealth.rules.batch.drools.RuleResult
+import com.wanhuhealth.rules.batch.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.batch.drools.ResResult
+import java.util.Map
+import java.util.HashMap
+
+global ResResult resResult;
+
+rule "useAmtExceed:单次用量超限-处方中每个药品，处方内单次用量超过说明书单次用药量"
+when
+    $orderInfoRuleModel: OrderInfoRuleModel($drugInfoList:drugInfoList)
+
+    $drugFact: (DrugInfoRuleModel(useAmount != null && maximumDose > 0, useAmount > maximumDose) from $drugInfoList)
+then
+    RuleResult ruleResult = new RuleResult();
+    ruleResult.setRuleCheckObjectType(2);
+    ruleResult.setRuleMark("useAmtExceed");
+    ruleResult.setDrugId($drugFact.getDrugId());
+
+    resResult.getRuleResultList().add(ruleResult);
+    
+end

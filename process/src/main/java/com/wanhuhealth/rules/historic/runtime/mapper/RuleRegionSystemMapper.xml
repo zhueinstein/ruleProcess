@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanhuhealth.rules.historic.runtime.mapper.RuleRegionSystemMapper" >
+
+    <resultMap id="RuleRegionSystemEntity" type="com.wanhuhealth.rules.historic.model.CfgRegionSystemCategory" extends="com.wanhuhealth.rules.utils.BaseMapper.BaseResultMap">
+        <result column="id" jdbcType="BIGINT" property="id"></result>
+        <result column="region_id" jdbcType="BIGINT" property="regionId" />
+        <result column="sys_category" jdbcType="INTEGER" property="sysCategory" />
+        <result column="inner_category" jdbcType="INTEGER" property="innerCategory" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+    </resultMap>
+
+    <sql id="Base_Column">
+        id,region_id,sys_category,inner_category,level,<include refid="com.wanhuhealth.rules.utils.BaseMapper.Base_Column"/>
+    </sql>
+    <select id="findByRegionId" resultMap="RuleRegionSystemEntity">
+        SELECT  <include refid="Base_Column"/>
+        FROM cfg_region_system_category t
+        WHERE t.region_id = #{regionId, jdbcType=BIGINT}
+    </select>
+
+
+</mapper>

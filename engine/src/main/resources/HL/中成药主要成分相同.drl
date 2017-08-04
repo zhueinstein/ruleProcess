@@ -1,0 +1,73 @@
+package com.wanhuRule.hl
+import com.wanhuhealth.rules.drools.OrderInfoRuleModel
+import com.wanhuhealth.rules.drools.DrugInfoRuleModel
+import com.wanhuhealth.rules.drools.DiseaseInfoRuleModel
+import com.wanhuhealth.rules.drools.ResResult
+import com.wanhuhealth.rules.drools.RuleResult
+import com.wanhuhealth.rules.drools.ComputeSalience
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Comparator
+global ResResult resResult;
+global ComputeSalience computeSalience;
+// 中成药主要成分相同	商品名为金水宝胶囊	商品名为百令胶囊		禁忌	优先扣除处方中总价高的药品
+
+rule "ChinesePatentMedicineIngredientDuplicate:中成药主要成分相同(金水宝胶囊－百令胶囊)"
+salience computeSalience.ChinesePatentMedicineIngredientDuplicate
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit, commonName == "金水宝胶囊") from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "百令胶囊") from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+   $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("ChinesePatentMedicineIngredientDuplicate");
+       ruleResult.setMarkName("中成药主要成分相同(金水宝胶囊－百令胶囊)");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end
+ // 中成药主要成分相同	商品名为脑安胶囊	商品名为华佗再造丸		禁忌	优先扣除处方中总价高的药品
+
+rule "ChinesePatentMedicineIngredientDuplicate:中成药主要成分相同(脑安胶囊－华佗再造丸)"
+salience computeSalience.ChinesePatentMedicineIngredientDuplicate
+lock-on-active true
+when
+    $orderInfo:OrderInfoRuleModel($drugInfoList: drugInfoList)
+    $drugInfo: DrugInfoRuleModel(!omit, commonName == "脑安胶囊") from $drugInfoList
+    $dupList: ArrayList(size > 0) from collect(DrugInfoRuleModel(!omit, commonName == "华佗再造丸") from $drugInfoList)
+then
+    $dupList.add($drugInfo);
+   $dupList = OrderInfoRuleModel.removeZero($dupList);
+    for(int index = 1; index < $dupList.size(); index++){
+       DrugInfoRuleModel model = (DrugInfoRuleModel) $dupList.get(index);
+       RuleResult ruleResult = new RuleResult();
+       ruleResult.setRuleCheckObjectType(2);
+       ruleResult.setRuleMark("ChinesePatentMedicineIngredientDuplicate");
+       ruleResult.setMarkName("中成药主要成分相同(脑安胶囊－华佗再造丸)");
+       ruleResult.setDrugId(model.getDrugId());
+       for (DrugInfoRuleModel drugInfoRuleModel : $orderInfo.getDrugInfoList()) {
+           if(drugInfoRuleModel.getDrugId() == model.getDrugId()){
+               drugInfoRuleModel.setBuyAmount(0.00);
+               drugInfoRuleModel.setOmit(true);
+           }
+       }
+
+       resResult.getRuleResultList().add(ruleResult);
+    }
+    update($orderInfo)
+ end
