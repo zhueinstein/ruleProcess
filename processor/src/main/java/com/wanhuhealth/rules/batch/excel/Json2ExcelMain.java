@@ -203,8 +203,10 @@ public class Json2ExcelMain {
                  } else {
                      if (outFormatMessage.getComplexSave() != null && outFormatMessage.getComplexSave().size() > 0) {
                          for (String ruleMark : outFormatMessage.getRuleViolates().split(",")) {
-                             decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getComplexSave().get(ruleMark)));
-                             decimal.setScale(2, RoundingMode.HALF_UP);
+                             if(outFormatMessage.getComplexSave().get(ruleMark) != null){
+                                 decimal = new BigDecimal(outFormatMessage.getPrice()).multiply(new BigDecimal(outFormatMessage.getComplexSave().get(ruleMark)));
+                                 decimal.setScale(2, RoundingMode.HALF_UP);
+                             }
                              ht.put(ruleMark + "EV", decimal);
                          }
                      } else {

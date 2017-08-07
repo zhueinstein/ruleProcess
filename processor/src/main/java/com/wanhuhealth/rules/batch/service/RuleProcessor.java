@@ -16,8 +16,8 @@ public class RuleProcessor {
     MedicinePartmentProcessor medicinePartmentProcessor;
 
     public void processor(OrderInfoRuleModel orderFact, ResResult global){
-        commonProcessor.processor(orderFact, global);
         medicinePartmentProcessor.processor(orderFact, global);
+        commonProcessor.processor(orderFact, global);
 //        WarningProcesser.processor(orderFact, global);
     }
 }

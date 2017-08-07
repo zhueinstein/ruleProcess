@@ -5,6 +5,7 @@ import com.wanhuhealth.rules.drools.OrderInfoRuleModel;
 import com.wanhuhealth.rules.drools.ResResult;
 import com.wanhuhealth.rules.drools.RulesConstant;
 import org.kie.api.KieServices;
+import org.kie.api.cdi.KContainer;
 import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -19,14 +20,16 @@ public class MedicinePartmentProcessor {
 
     @Autowired
     ComputeSalience computeSalience;
-    @KSession("HL")
-    KieSession kieSession;
+    @KContainer
+    KieContainer kieContainer;
+
     public void processor(OrderInfoRuleModel orderFact, ResResult global){
+        KieSession kieSession = kieContainer.newKieSession("HL");
         kieSession.setGlobal("resResult", global);
         kieSession.setGlobal("computeSalience", computeSalience);
         kieSession.insert(orderFact);
         kieSession.fireAllRules();
-//        kieSession.dispose();
+        kieSession.dispose();
     }
 
 }

@@ -49,10 +49,10 @@ public class DroolsProcessTaskService {
 
     @Autowired
     RuleProcessor processor;
-    @KSession("HL")
+    /*@KSession("HL")
     KieSession hl;
     @KSession(value = "wanHu")
-    KieSession wanHu;
+    KieSession wanHu;*/
     DecimalFormat df   = new DecimalFormat("######0.00");
     static FileWriter fw = null;
     static FileWriter modelFw = null;
@@ -72,7 +72,7 @@ public class DroolsProcessTaskService {
             fw = new FileWriter(file, true);
             File modelFile = new File(String.format(RulesConstant.data_direction + "DroolsModels_%s.txt", tail));
             modelFw = new FileWriter(modelFile, true);
-            KieServices kieService = KieServices.Factory.get();
+//            KieServices kieService = KieServices.Factory.get();
         }catch (Exception ex){
             System.out.println(ex);
         }
@@ -96,15 +96,15 @@ public class DroolsProcessTaskService {
                 modelFw.write("\n");
                 modelFw.flush();
                 ResResult resResult = new ResResult();
-//                processor.processor(orderInfoRuleModel, resResult);
+                processor.processor(orderInfoRuleModel, resResult);
                 //kieSession = kieContainer.newKieSession(RulesConstant.hlSessionName);
-                hl.setGlobal("resResult", resResult);
+              /*  hl.setGlobal("resResult", resResult);
                 hl.setGlobal("computeSalience", computeSalience);
                 hl.insert(orderInfoRuleModel);
                 hl.fireAllRules();
                 wanHu.setGlobal("resResult", resResult);
                 wanHu.insert(orderInfoRuleModel);
-                wanHu.fireAllRules();
+                wanHu.fireAllRules();*/
                 orderInfoRuleModel.setRuleResultList(resResult.getRuleResultList());
                 handleMessage(orderInfo, orderInfoRuleModel);
                 click.processing(click);
