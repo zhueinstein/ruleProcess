@@ -7,9 +7,9 @@
        >
 
     <kie:import
-            releaseId-ref="ksession-releaseId" enableScanner="true" scannerInterval="60000"/>
+            releaseId-ref="releaseId" enableScanner="true" scannerInterval="60000"/>
 
-    <kie:releaseId id="ksession-releaseId" groupId="com.wanhuhealth.ruleProcess" artifactId="engine" version="1.0-SNAPSHOT"/>
+    <kie:releaseId id="releaseId" groupId="com.wanhuhealth.ruleProcess" artifactId="engine" version="LATEST"/>
 
     <bean id="kiePostProcessor"
 
